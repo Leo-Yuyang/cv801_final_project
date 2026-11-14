@@ -54,6 +54,7 @@ apptainer exec --rocm --bind "${project_root}:${project_root}" --pwd "${project_
   "${training_script}" \
   --dataset-root "${dataset_root}" \
   --output-dir "${output_dir}" \
+  --model "${MODEL_PATH:-IDEA-Research/grounding-dino-tiny}" \
   --epochs "${epochs}" \
   --batch-size 1 \
   --gradient-accumulation "${gradient_accumulation}" \

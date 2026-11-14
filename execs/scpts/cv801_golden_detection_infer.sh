@@ -45,7 +45,7 @@ export APPTAINERENV_PYTORCH_HIP_ALLOC_CONF="expandable_segments:True"
 
 case "${family}" in
   yolo)
-    model="${project_root}/wkdrs/cv801-yolo26x/train-357714/weights/best.pt"
+    model="${MODEL_PATH:-${project_root}/wkdrs/cv801-yolo26x/train-357714/weights/best.pt}"
     [[ -f "${model}" ]] || { echo "Frozen YOLO26x model is missing." >&2; exit 1; }
     export APPTAINERENV_YOLO_CONFIG_DIR="${project_root}/inits/ultralytics"
     apptainer exec --rocm --bind "${project_root}:${project_root}" --pwd "${project_root}" \
@@ -63,7 +63,7 @@ case "${family}" in
       --batch-size "${BATCH_SIZE:-1}"
     ;;
   grounding_dino)
-    model="${project_root}/wkdrs/cv801-grounding-dino/train-357715/final"
+    model="${MODEL_PATH:-${project_root}/wkdrs/cv801-grounding-dino/train-357715/final}"
     [[ -f "${model}/config.json" ]] || { echo "Frozen Grounding DINO model is missing." >&2; exit 1; }
     apptainer exec --rocm --bind "${project_root}:${project_root}" --pwd "${project_root}" \
       "${container}" "${detector_python}" -m torch.distributed.run \
@@ -78,7 +78,7 @@ case "${family}" in
       --nms-iou "${NMS_IOU:-0.6}"
     ;;
   locateanything)
-    model="${project_root}/wkdrs/cv801-locateanything/train-357716"
+    model="${MODEL_PATH:-${project_root}/wkdrs/cv801-locateanything/train-357716}"
     eagle_root="${project_root}/inits/Eagle/Embodied"
     raw_output="${output_dir}/raw_predictions.jsonl"
     [[ ( -x "${locate_python}" || -L "${locate_python}" ) && -f "${model}/config.json" ]] || {

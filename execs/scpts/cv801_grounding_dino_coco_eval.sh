@@ -18,7 +18,7 @@ container="${project_root}/inits/containers/rocm7.0-pytorch2.8.sif"
 python_bin="${project_root}/inits/envs/cv801-detectors/bin/python"
 dataset_root="${project_root}/datas/cv801_detection_v1"
 ground_truth="${dataset_root}/coco/instances_val.json"
-model="${project_root}/wkdrs/cv801-grounding-dino/train-357715/final"
+model="${MODEL_PATH:-${project_root}/wkdrs/cv801-grounding-dino/train-357715/final}"
 smoke="${SMOKE:-0}"
 gpus="${GPUS:-8}"
 

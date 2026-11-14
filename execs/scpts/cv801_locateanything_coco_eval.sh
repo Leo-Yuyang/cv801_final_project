@@ -20,7 +20,7 @@ eval_python="${project_root}/inits/envs/cv801-detectors/bin/python"
 eagle_root="${project_root}/inits/Eagle/Embodied"
 dataset_root="${project_root}/datas/cv801_detection_v1"
 ground_truth="${dataset_root}/coco/instances_val.json"
-model="${project_root}/wkdrs/cv801-locateanything/train-357716"
+model="${MODEL_PATH:-${project_root}/wkdrs/cv801-locateanything/train-357716}"
 smoke="${SMOKE:-0}"
 gpus="${GPUS:-8}"
 

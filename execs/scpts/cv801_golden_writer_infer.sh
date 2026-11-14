@@ -34,12 +34,12 @@ input_root="${project_root}/datas/cv801_golden_test_inputs_v1"
 if [[ "${variant}" == "t2" ]]; then
   input_file="${input_root}/writer_t2.jsonl"
   audit_args=(--require-t2)
-  adapter="${project_root}/wkdrs/cv801-qwen35/t2-train-382484/v0-20261109-131602/checkpoint-1197"
+  adapter="${ADAPTER_PATH:-${project_root}/wkdrs/cv801-qwen35/t2-train-382484/v0-20261109-131602/checkpoint-1197}"
   audit_variant=t2
 elif [[ "${variant}" == "t1" ]]; then
   input_file="${input_root}/writer_t0_t1.jsonl"
   audit_args=()
-  adapter="${project_root}/wkdrs/cv801-qwen35/t1-train-358388/v0-20261104-192033/checkpoint-1197"
+  adapter="${ADAPTER_PATH:-${project_root}/wkdrs/cv801-qwen35/t1-train-358388/v0-20261104-192033/checkpoint-1197}"
   audit_variant=t0_t1
 else
   input_file="${input_root}/writer_t0_t1.jsonl"
