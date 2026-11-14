@@ -1,0 +1,748 @@
+\documentclass[11pt]{article}
+
+% ACL-formatted experimental report. ``preprint'' keeps the ACL two-column
+% layout without review line numbers.
+\usepackage[preprint]{acl}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage[section]{placeins}
+
+% Keep experiment tables close to their explanation and pack float-only pages
+% from the top if LaTeX must create one.
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpsep}{12pt}
+\setlength{\@fpbot}{0pt plus 1fil}
+\makeatother
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.80}
+\setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
+
+\newcommand{\gold}{\textsc{Golden Test}}
+\newcommand{\Tzero}{\textsc{T0}}
+\newcommand{\Tone}{\textsc{T1}}
+\newcommand{\Ttwo}{\textsc{T2}}
+\newcommand{\Rc}{\ensuremath{R_{c}}}
+\newcommand{\Rd}{\ensuremath{R_{d}}}
+\newcommand{\Judge}{\ensuremath{J}}
+\newcommand{\best}[1]{\textbf{#1}}
+
+\title{CV801 Experimental Report:\\
+Detection, Grounded Agricultural Captioning, and Multi-Agent Revision}
+
+\author{CV801 Research Project \\
+Internal Experimental Report}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This report documents the completed CV801 experiment chain in execution order.
+The testbed contains 8,097 agricultural images and 14,601 annotated objects,
+including a frozen 1,000-image test set. Three detectors were fine-tuned and
+evaluated under a unified COCO protocol. A 9B multimodal writer was then tested
+zero-shot, after domain LoRA adaptation, and with predicted object proposals.
+Finally, visual and domain reviewers, a text-only judge, one- and two-round
+revision, an alternative reviewer, and an independent visual evaluator were
+compared. Fine-tuned YOLO26x reached 72.9 COCO AP. Domain adaptation increased
+caption token F1 from 5.8 to 49.1. Predicted proposals increased object-link F1
+from 59.7 to 76.7, although the independent visual score changed only from
+4.172 to 4.175 out of 6. One full review round produced the highest visual score
+of 4.288; a second round regressed to 4.268 and consumed more GPU time. Human
+rating and a direct GPT-6 Astra baseline were cancelled before finalization and
+are not pending experiments.
+\end{abstract}
+
+\section{Scope and Completion Status}
+
+The experimental goal is to generate one structured agricultural report per
+image. The report must identify every visible target object, keep descriptions
+linked to object IDs, provide a conservative assessment and confidence, and
+return valid JSON. The completed chain addresses three questions:
+
+\begin{enumerate}[leftmargin=*,nosep]
+    \item Does domain adaptation improve structured descriptions over a
+    zero-shot multimodal model?
+    \item Do predicted object proposals improve object enumeration and linkage?
+    \item Does role-separated Agent Review improve the final report enough to
+    justify its compute cost?
+\end{enumerate}
+
+All retained automated runs, frozen-test evaluations, corrected-denominator
+validation, unified COCO and operating-point detection evaluation, independent
+visual evaluation, and per-image compute aggregation have completed. Human or
+engineer scoring was removed from the final scope. The direct GPT-6 Astra
+baseline was also cancelled. They are reported as scope decisions, not
+incomplete work.
+
+\section{Dataset and Common Protocol}
+
+\subsection{Data Split}
+
+The cleaned dataset contains 8,097 images and 14,601 accepted boxes from 11 crop
+categories: bitter gourd, cauliflower, cherry tomato, chili, date palm,
+eggplant, fig, lemon, luffa, mulberry, and tomato. Table~\ref{tab:data} shows the
+fixed split used by every experiment.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Split & Images & Objects \\
+\midrule
+Train & 6,387 & 11,555 \\
+Validation & 710 & 1,299 \\
+\gold & 1,000 & 1,747 \\
+\midrule
+Total & 8,097 & 14,601 \\
+\bottomrule
+\end{tabular}
+\caption{Frozen split shared by detection and report-generation experiments.}
+\label{tab:data}
+\end{table}
+
+Splitting uses seed 20261104 and stratifies by crop and fruit/leaf context. It
+keeps 7,862 source groups intact, with no group crossing train, validation, and
+test. Ninety-three images whose boxes were all rejected during cleaning are
+excluded instead of being treated as negative images. Images are converted to
+EXIF-corrected RGB JPEGs for model input; the original files are unchanged.
+
+Of the training images, 2,478 contain multiple accepted objects. Therefore, each
+image appears once in the writer dataset and all targets are aggregated into one
+ordered response. Objects are numbered from top to bottom and then left to
+right. Supervised report targets are dataset-level visually reviewed GPT
+captions, not independently written engineer references. This provenance also
+applies to reference-based caption metrics.
+
+\subsection{Frozen-Test and Leakage Controls}
+
+The 710-image validation split selects models and protocols. The 1,000-image
+\gold{} remains unavailable to training and selection. The formal test DAG runs
+all inference without labels. References are attached only after predictions
+and reviewer outputs are frozen. The writer, visual reviewer, domain reviewer,
+text-only judge, and independent visual evaluator do not receive test reference
+texts.
+
+Every output is audited for expected sample count, unique sample IDs, JSON
+validity, and schema compliance before aggregation. All formal training runs use
+eight AMD Instinct MI210 GPUs with approximately 64~GiB memory per GPU, ROCm 7,
+and PyTorch 2.8 containers.
+
+\section{Experiment A: Object Detection}
+
+\subsection{Models and Training Settings}
+
+The detection experiment compares a closed-set detector with two grounding-
+oriented models. YOLO26x is initialized from the Ultralytics checkpoint
+\citep{ultralytics2026}. Grounding DINO Tiny uses language-guided detection
+\citep{liu2023grounding}. LocateAnything-3B uses generative parallel box
+decoding \citep{wang2026locate}. Table~\ref{tab:det-settings} records the formal
+fine-tuning settings.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1.10}
+\begin{tabular}{p{1.85cm}p{4.85cm}}
+\toprule
+Model & Formal setting \\
+\midrule
+YOLO26x & 100-epoch cap; early stop at epoch 88; patience 30; 960 px; global batch 64; AMP; cosine schedule; automatic optimizer; weight decay $5\times10^{-4}$; seed 20261104. \\
+Grounding DINO Tiny & 12 epochs / 4,800 steps; batch 1 per GPU; accumulation 2; effective batch 16; LR $2\times10^{-5}$; BF16; cosine schedule; seed 20261104. \\
+LocateAnything-3B & 3,000 steps; batch 1 per GPU; effective batch 8; LR $2\times10^{-5}$; warmup 100; BF16; SDPA; 4,096 tokens; packing buffer 32; LoRA rank 64; language and vision backbones frozen; connector trainable. \\
+\bottomrule
+\end{tabular}
+\caption{Formal detector fine-tuning settings. All runs use eight MI210 GPUs.}
+\label{tab:det-settings}
+\end{table}
+
+Before formal training, each model passes runtime, smoke-fit, and output-format
+checks. YOLO's best framework-native validation checkpoint occurs at epoch 58,
+with mAP50--95 of 0.624. This native validation number is not mixed with the
+unified final COCO evaluation below.
+
+\subsection{Unified COCO Results}
+
+All detectors are evaluated on the same 1,000 \gold{} images using
+\texttt{pycocotools}. We report COCO AP averaged over IoU 0.50--0.95 and AP50
+\citep{lin2014coco}. YOLO uses native confidence scores, confidence threshold
+0.001, and NMS IoU 0.7. Grounding DINO uses box and text thresholds 0.01 and NMS
+IoU 0.6. LocateAnything does not expose a calibrated native confidence in the
+evaluated interface, so every box receives score 0.2 and generation order
+breaks ties.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Detector & AP & AP50 & Boxes \\
+\midrule
+YOLO26x & \best{72.9} & \best{82.2} & 14,280 \\
+Grounding DINO Tiny & 26.5 & 28.2 & 73,517 \\
+LocateAnything-3B & 53.3 & 61.8 & 1,468 \\
+\bottomrule
+\end{tabular}
+\caption{Unified COCO box metrics (\%) on the 1,000-image \gold.}
+\label{tab:det-results}
+\end{table}
+
+The thresholded metrics requested in the experiment plan use class-aware,
+one-to-one greedy matching at IoU $\geq0.5$. Thresholds are frozen without
+using \gold{} labels: 0.404 for YOLO from its validation F1 curve, 0.250913 for
+Grounding DINO by maximum validation micro-F1, and 0.2 for all LocateAnything
+boxes because its interface assigns one constant score. These operating points
+are separate from the low thresholds used to retain detections for COCO AP.
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{3.2pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+Detector & Score & Prec. & Recall & F1 & TP-IoU \\
+\midrule
+YOLO26x & 0.404 & 76.1 & \best{80.5} & \best{78.2} & 0.943 \\
+Grounding DINO Tiny & 0.251 & 22.5 & 59.5 & 32.7 & \best{0.971} \\
+LocateAnything-3B & 0.200 & \best{85.3} & 71.7 & 77.9 & 0.950 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Frozen operating-point micro metrics (\%) on \gold. TP-IoU is mean
+IoU over class-correct true-positive matches and does not reward missed boxes.}
+\label{tab:det-operating}
+\end{table}
+
+YOLO26x obtains the highest AP, exceeding LocateAnything by 19.6 points and
+Grounding DINO by 46.4 points, and the highest operating-point F1 at 78.2. It is
+therefore frozen as the proposal generator for the subsequent T2 writer.
+LocateAnything reaches a similar F1 through higher precision and lower recall,
+but its constant confidence limits interpretation of its ranked
+precision--recall curve. Grounding DINO's matched boxes have high IoU, but its
+many false positives reduce precision to 22.5\%.
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lrr@{\hspace{4pt}}lrr}
+\toprule
+Crop & AP & AP50 & Crop & AP & AP50 \\
+\midrule
+Bitter gourd & 74.3 & 85.6 & Fig & 74.1 & 80.8 \\
+Cauliflower & 83.6 & 92.3 & Lemon & \best{87.4} & 93.6 \\
+Cherry tomato & 84.3 & 92.3 & Luffa & 58.1 & 73.2 \\
+Chili & 52.8 & 69.8 & Mulberry & 75.2 & 83.3 \\
+Date palm & 43.9 & 48.1 & Tomato & 83.0 & 91.6 \\
+Eggplant & 84.9 & 93.9 & & & \\
+\bottomrule
+\end{tabular}
+\caption{YOLO26x per-category COCO metrics (\%) on \gold.}
+\label{tab:per-category}
+\end{table}
+
+Per-category AP ranges from 43.9 for date palm to 87.4 for lemon. Chili and
+luffa also fall below 60 AP. The detector is strongest overall but does not
+provide uniform crop coverage; these lower-performing classes remain a boundary
+for downstream proposal conditioning.
+
+\FloatBarrier
+
+\section{Experiment B: Structured VLM Writer}
+
+\subsection{Compared Writer Configurations}
+
+The writer returns image-level \texttt{crop} and \texttt{plant\_part} fields and
+an ordered object list. Each object contains an ID, caption, assessment, image
+quality, confidence, and action. Coordinates are never copied into the output.
+The four writer configurations are:
+
+\begin{itemize}[leftmargin=*,nosep]
+    \item \Tzero: zero-shot Qwen3.5-9B \citep{qwen2026qwen35}, whole image, no boxes;
+    \item \Tone: Qwen3.5-9B with domain LoRA, whole image, no boxes;
+    \item \Ttwo: the same domain training and targets as \Tone, with frozen
+    YOLO predictions added to the prompt; and
+    \item Qwen3.5-27B: an unadapted, zero-shot scale baseline, whole image, no boxes.
+\end{itemize}
+
+For \Ttwo, proposals are normalized to $[0,1000]$ \texttt{xyxy} coordinates,
+filtered at score 0.25, and capped at 20 per image. The prompt explicitly says
+that they may be missing or incorrect and must be treated as localization hints,
+not labels. T1 and T2 assistant targets are checked for exact identity, so the
+comparison isolates predicted-proposal conditioning.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\renewcommand{\arraystretch}{1.08}
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{p{2.25cm}p{2.15cm}p{2.15cm}}
+\toprule
+Setting & \Tone & \Ttwo \\
+\midrule
+Training examples & 6,387 / 710 & Same \\
+Input & Whole image & Image + proposals \\
+Epochs / steps & 3 / 1,197 & 3 / 1,197 \\
+Batch/GPU; accum.; GPUs & 1; 2; 8 & 1; 2; 8 \\
+Effective batch & 16 & 16 \\
+Learning rate & $10^{-4}$ & $10^{-4}$ \\
+Schedule / warmup & Cosine / 5\% & Same \\
+Weight decay & 0.01 & 0.01 \\
+LoRA & $r=64$, $\alpha=128$, dropout 0.05 & Same \\
+Trainable modules & Language all-linear LoRA & Same \\
+Frozen modules & Vision tower + aligner & Same \\
+Precision / attention & BF16 / SDPA & Same \\
+Training length & 4,096 tokens & 6,144 tokens \\
+Image-token maximum & 768 & 768 \\
+Inference & temp. 0; 4,096 new tokens & Same \\
+\bottomrule
+\end{tabular}
+\caption{Formal T1 and T2 training settings. T0 and the 27B baseline receive no
+fine-tuning. LoRA follows \citet{hu2022lora}.}
+\label{tab:writer-settings}
+\end{table}
+
+The 6,144-token T2 limit covers the proposal-plus-target long tail. The longest
+audited targets contain 35 objects in training and 22 in validation. T1 reaches
+validation loss 0.483 and token accuracy 0.841; T2 reaches 0.491 and 0.841.
+
+\subsection{Evaluation Metrics}
+
+Structured metrics include valid JSON, exact object count, and object-ID link
+precision, recall, and F1. Text metrics compare only unique object-ID matches:
+caption token F1, unsmoothed single-reference corpus BLEU-4
+\citep{papineni2002bleu}, and mean object-level ROUGE-L F1
+\citep{lin2004rouge}. These metrics measure agreement with the reviewed GPT
+targets, not independent human correctness.
+
+Field-level metrics compare crop, plant part, image quality, stage, disease,
+severity, action, and confidence with the same reviewed GPT targets. Confidence
+is reported as mean absolute error (MAE; lower is better); categorical fields
+and action are exact-match or token-F1 measures. Missing fields are reported as
+unavailable rather than scored as zero.
+
+A separate Pixtral-12B evaluator \citep{agrawal2024pixtral} sees the image and
+candidate report without reference text. It assigns integer scores from 0 to 2
+for visual evidence ($S_e$), conclusion support ($S_s$), and confidence
+appropriateness ($S_c$):
+
+\begin{equation}
+S_{\mathrm{visual}}=S_e+S_s+S_c, \qquad S_{\mathrm{visual}}\in[0,6].
+\end{equation}
+
+This independent score is model-based and has not been calibrated against human
+agreement.
+
+\subsection{Writer Results}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.2pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\toprule
+System & JSON & Count & ID-P & ID-R & ID-F1 & Cap.-F1 & B-4 & R-L \\
+\midrule
+\Tzero & 97.6 & 57.2 & 43.1 & 56.3 & 48.9 & 5.8 & 0.0 & 5.7 \\
+\Tone & 88.8 & 52.9 & 56.8 & 62.9 & 59.7 & 49.1 & 14.0 & 39.0 \\
+\Ttwo & \best{99.5} & \best{64.1} & 67.2 & \best{89.3} & \best{76.7} & \best{51.3} & \best{15.5} & \best{42.2} \\
+27B zero-shot & 98.4 & 60.4 & \best{99.2} & 56.5 & 72.0 & 22.2 & 0.4 & 17.4 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Writer structure and text results (\%) on \gold. B-4 is BLEU-4 and R-L
+is ROUGE-L.}
+\label{tab:writer-structured}
+\end{table}
+
+Domain adaptation is the main language intervention. Relative to T0, T1 raises
+caption F1 from 5.8 to 49.1 and ROUGE-L from 5.7 to 39.0. The larger 27B
+zero-shot model reaches only 22.2 caption F1, so parameter scale alone does not
+replace in-domain adaptation in this comparison.
+
+Predicted boxes primarily improve structure. Relative to T1, T2 raises exact
+object count by 11.2 points, object-link F1 by 17.0 points, and caption F1 by 2.2
+points. JSON validity also increases from 88.8\% to 99.5\%.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\toprule
+System & Crop & Part & ImgQ & Stage & Disease & Severity & Action & Conf.-MAE \\
+\midrule
+\Tzero & 97.6 & 97.6 & \best{51.9} & -- & -- & -- & 0.6 & -- \\
+\Tone & 88.8 & 88.8 & 51.4 & \best{73.2} & 40.4 & 39.3 & \best{42.0} & \best{0.132} \\
+\Ttwo & \best{99.4} & \best{99.5} & 49.4 & 60.8 & \best{42.2} & \best{41.0} & 37.0 & 0.145 \\
+27B zero-shot & 63.6 & 93.7 & 17.6 & -- & -- & -- & 3.8 & 0.203 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Writer field-level agreement with reviewed GPT targets (\%; confidence
+is MAE, lower is better). Dashes mean that the output omitted the field.}
+\label{tab:writer-fields}
+\end{table}
+
+The field audit prevents the structural gain from being read as a uniform
+semantic gain. T2 is better than T1 for crop, plant part, disease, and severity,
+but T1 is better for stage, action, and confidence MAE. Proposal conditioning
+therefore improves enumeration while trading off some report fields.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+System & Evidence & Support & Conf. & Total \\
+\midrule
+\Tzero & 1.285 & 0.560 & 0.805 & 2.650 \\
+\Tone & \best{1.623} & 1.275 & 1.274 & 4.172 \\
+\Ttwo & 1.512 & \best{1.353} & \best{1.310} & \best{4.175} \\
+27B zero-shot & 1.116 & 0.730 & 0.982 & 2.828 \\
+\bottomrule
+\end{tabular}
+\caption{Independent model-based visual score for writer configurations. Each
+component is in $[0,2]$ and Total is in $[0,6]$.}
+\label{tab:writer-visual}
+\end{table}
+
+The independent visual result narrows the interpretation. T2 improves support
+and confidence appropriateness over T1, but its visual-evidence component drops
+from 1.623 to 1.512. The total is almost unchanged at 4.172 versus 4.175.
+Predicted proposals therefore act as strong enumeration and linkage anchors;
+this experiment does not show a general improvement in visual faithfulness.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.0pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+System & Supported & Unsupported & Unsup.\% & Correct & Incorrect & Uncertain \\
+\midrule
+\Tzero & 1,349 & 2,194 & 61.9 & 637 & 217 & 151 \\
+\Tone & 2,845 & 1,232 & \best{30.2} & 1,029 & 54 & 37 \\
+\Ttwo & \best{3,266} & 1,621 & 33.2 & \best{1,142} & 104 & 137 \\
+27B zero-shot & 1,528 & 1,994 & 56.6 & 506 & 341 & 161 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Independent evaluator claim and object-link audit. Unsupported share
+uses supported plus unsupported enumerated claims as its denominator.}
+\label{tab:writer-claim-audit}
+\end{table}
+
+The model-based claim audit gives T1 the lowest unsupported-claim share at
+30.2\%. T2 produces more supported claims than T1 (3,266 versus 2,845), but also
+more unsupported claims (1,621 versus 1,232), raising the share to 33.2\%.
+Thus, the stronger T2 object linkage does not establish lower claim-level
+hallucination.
+
+The count-based extra-object proxy falls from 56.9\% for T0 to 43.1\% for T1
+and 32.8\% for T2. It is not a visual hallucination rate: it cannot detect an
+unsupported disease, severity, action, or attribute, and cannot distinguish a
+model error from a missing reference object.
+
+\FloatBarrier
+
+\section{Experiment C: Agent Review and Revision}
+
+\subsection{Review Roles and Configurations}
+
+T2 is frozen as the writer. Review follows the iterative-feedback motivation of
+Self-Refine \citep{madaan2023selfrefine}, but separates roles and evidence
+access:
+
+\begin{itemize}[leftmargin=*,nosep]
+    \item \Rc, InternVL3.5-8B \citep{wang2025internvl}, sees the image and draft
+    and checks visible evidence, target coverage, and object linkage;
+    \item \Rd, InternVL3.5-38B, sees the image and draft and checks agricultural
+    terminology, maturity, disease, severity, confidence, and action; and
+    \item \Judge, unadapted Qwen3.5-9B, sees only the draft and reviews. It can
+    choose \texttt{accept} or \texttt{revise} but cannot add visual facts.
+\end{itemize}
+
+The planned Gemma 3 visual reviewer was unavailable behind an external model
+access gate, so InternVL3.5-8B is the primary \Rc{} and the accessible
+Pixtral-12B reviewer provides the cross-family swap. \Rd{} uses its frozen model
+knowledge but no external domain-reference corpus; all validation and test
+reference texts remain hidden.
+
+The compared configurations are Rd-only, Rc-only, Rc+Rd, the full
+Rc+Rd+Judge pipeline after one revision, and the full pipeline after a second
+revision and recheck. A reviewer-swap experiment replaces Rc with Pixtral-12B.
+Revisions always use the frozen T2 LoRA writer. References remain hidden from
+all agents.
+
+\subsection{Structured Results After Revision}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Configuration & JSON & Count & ID-P & ID-R & ID-F1 & Cap.-F1 & Extra \\
+\midrule
+Frozen \Ttwo & \best{99.5} & \best{64.1} & 67.2 & \best{89.3} & \best{76.7} & \best{51.3} & 32.8 \\
+\Rd-only & 95.6 & 59.2 & \best{99.2} & 56.2 & 71.7 & 50.9 & \best{0.5} \\
+\Rc-only & 93.8 & 56.7 & \best{99.2} & 54.7 & 70.5 & \best{51.3} & 0.7 \\
+\Rc+\Rd & 95.6 & 59.4 & 84.3 & 56.5 & 67.6 & 50.1 & 15.5 \\
+Full round 1 & 91.6 & 58.3 & 97.9 & 55.5 & 70.9 & \best{51.3} & 1.9 \\
+Full round 2 & 97.8 & 59.6 & 89.1 & 59.6 & 71.4 & 50.4 & 10.9 \\
+Pixtral as \Rc & 91.1 & 57.6 & 97.6 & 56.2 & 71.3 & 51.1 & 2.2 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Structured review results (\%). Extra is the extra-object proxy, not a
+visual hallucination metric.}
+\label{tab:review-structured}
+\end{table}
+
+Every reviewed configuration lowers exact count and object-link F1 relative to
+the frozen T2 writer. The very low extra-object proxy in several review variants
+does not imply that they are visually correct. Together with the reduced count
+metrics, it indicates that reviewers often make the output more conservative by
+deleting or collapsing difficult objects.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Configuration & Crop & Part & ImgQ & Stage & Disease & Severity & Action & Conf.-MAE \\
+\midrule
+Frozen \Ttwo & \best{99.4} & \best{99.5} & 49.4 & 60.8 & 42.2 & 41.0 & 37.0 & 0.145 \\
+\Rd-only & 76.9 & 95.2 & 52.6 & \best{62.6} & 41.0 & 38.4 & 40.3 & 0.135 \\
+\Rc-only & 72.2 & 93.5 & 52.9 & 58.7 & 44.1 & 42.6 & \best{41.1} & 0.133 \\
+\Rc+\Rd & 66.5 & 95.1 & 50.9 & 58.5 & 41.8 & 39.8 & 40.3 & 0.132 \\
+Full round 1 & 79.2 & 90.0 & 56.3 & 61.1 & 44.2 & \best{43.0} & 41.0 & 0.135 \\
+Full round 2 & \best{85.7} & \best{95.5} & 52.8 & 60.2 & 43.3 & 41.4 & 39.4 & \best{0.131} \\
+Pixtral as \Rc & 78.9 & 89.6 & \best{56.7} & 61.2 & \best{44.3} & 42.7 & 40.1 & 0.135 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Field-level review results against reviewed GPT targets (\%; confidence
+is MAE, lower is better).}
+\label{tab:review-fields}
+\end{table}
+
+Review improves selected fields but not one configuration dominates. Full
+round 1 is strongest on severity, Pixtral on image quality and disease, and
+round 2 on confidence MAE. These gains occur alongside lower object count and
+linkage recall than frozen T2.
+
+\subsection{Independent Visual Results}
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{3.7pt}
+\begin{tabular}{lrrrr}
+\toprule
+Configuration & Evidence & Support & Conf. & Total \\
+\midrule
+Frozen \Ttwo & 1.512 & 1.353 & 1.310 & 4.175 \\
+\Rd-only & 1.508 & 1.376 & 1.334 & 4.218 \\
+\Rc-only & 1.531 & 1.368 & 1.343 & 4.242 \\
+\Rc+\Rd & 1.488 & 1.373 & 1.278 & 4.139 \\
+Full round 1 & \best{1.581} & 1.352 & \best{1.355} & \best{4.288} \\
+Full round 2 & 1.559 & \best{1.387} & 1.322 & 4.268 \\
+\bottomrule
+\end{tabular}
+\caption{Independent Pixtral-12B scores for review configurations. Pixtral as
+Rc is omitted to prevent evaluator self-scoring.}
+\label{tab:review-visual}
+\end{table}
+
+Rc-only and Rd-only improve the total from 4.175 to 4.242 and 4.218,
+respectively. Combining the two reviews without the full judge loop falls to
+4.139. The full first round is best at 4.288, a gain of 0.113 over T2. The
+second round increases conclusion support but lowers evidence and confidence
+components, producing a slightly lower total of 4.268. The additional revision
+therefore does not improve the aggregate result.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.7pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+Configuration & Supported & Unsupported & Unsup.\% & Correct & Incorrect & Uncertain \\
+\midrule
+Frozen \Ttwo & 3,266 & 1,621 & \best{33.2} & \best{1,142} & 104 & 137 \\
+\Rd-only & 2,324 & 1,262 & 35.2 & 928 & 51 & 46 \\
+\Rc-only & 2,330 & 1,257 & 35.0 & 927 & 49 & 43 \\
+\Rc+\Rd & 2,221 & 1,254 & 36.1 & 927 & \best{43} & 45 \\
+Full round 1 & \best{2,489} & 1,305 & 34.4 & 947 & 50 & 58 \\
+Full round 2 & 2,370 & 1,278 & 35.0 & 940 & 58 & \best{27} \\
+\bottomrule
+\end{tabular}
+}
+\caption{Independent claim and object-link audit for review configurations.
+Pixtral as \Rc{} is excluded to avoid evaluator self-scoring.}
+\label{tab:review-claim-audit}
+\end{table}
+
+The higher 0--6 score after full round 1 is not accompanied by a lower
+unsupported-claim share: 34.4\% versus 33.2\% for frozen T2. The revision also
+reduces the number of independently audited links. The measured gain is
+therefore narrow---higher evidence and confidence rubric components---rather
+than a general reduction in model-flagged unsupported claims.
+
+\subsection{Decision Behavior}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Stage & Accept/pass & Revise \\
+\midrule
+\Rc review & 24 & 976 \\
+\Rd review & 235 & 765 \\
+Text judge & 27 & 973 \\
+Recheck round 1 & 29 & 971 \\
+Recheck round 2 & 31 & 969 \\
+Pixtral review & 0 & 1,000 \\
+Pixtral judge & 2 & 998 \\
+Pixtral recheck & 3 & 997 \\
+\bottomrule
+\end{tabular}
+\caption{Review decisions over 1,000 \gold{} examples. Recheck ``Revise'' means
+\texttt{revise\_again}.}
+\label{tab:decisions}
+\end{table}
+
+The decision rates are much stricter than the measured gains. Rc requests
+revision for 97.6\% of drafts, and the judge requests revision for 97.3\%. Even
+after two rewrites, the judge still requests another revision for 96.9\%.
+Pixtral is stricter: it requests revision for every initial draft and its judge
+accepts only two. These distributions show that the current judge is not a
+calibrated stopping rule.
+
+\FloatBarrier
+
+\section{Efficiency and Runtime}
+
+GPU-hours sum allocated GPU time for each logical system. Execution span is the
+difference between its first start and final end, excluding scheduler wait.
+Shared stages are charged to every logical system that requires them. The table
+therefore documents the actual experiment chains, not perfectly cached marginal
+serving cost. Because the internal MI210 allocation has no project-specific
+monetary rate card, cost is reported as GPU-hours rather than an invented dollar
+amount.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrr}
+\toprule
+Logical system & GPU-h & GPU-h/img & s/img & Span (min) & Visual \\
+\midrule
+YOLO test inference & 0.149 & 0.000149 & 0.067 & 1.1 & -- \\
+Grounding DINO test & 0.836 & 0.000836 & 0.376 & 6.3 & -- \\
+LocateAnything test & 0.876 & 0.000876 & 0.394 & 6.6 & -- \\
+\Tzero writer & 8.518 & 0.008518 & 3.833 & 63.9 & 2.650 \\
+\Tone chain & 40.400 & 0.040400 & 18.180 & 303.0 & 4.172 \\
+\Ttwo test chain & 9.143 & 0.009143 & 4.511 & 75.2 & 4.175 \\
+27B zero-shot & 16.853 & 0.016853 & 7.584 & 126.4 & 2.828 \\
+\Rc-only & 16.065 & 0.016065 & 53.441 & 890.7 & 4.242 \\
+\Rd-only & 33.757 & 0.033757 & 72.250 & 1,204.2 & 4.218 \\
+\Rc+\Rd & 37.719 & 0.037719 & 59.862 & 997.7 & 4.139 \\
+Full round 1 & 44.999 & 0.044999 & 119.715 & 1,995.3 & \best{4.288} \\
+Full round 2 & 51.523 & 0.051523 & 144.308 & 2,405.1 & 4.268 \\
+Pixtral reviewer chain & 46.079 & 0.046079 & 119.778 & 1,996.3 & --$^{\dagger}$ \\
+\bottomrule
+\end{tabular}
+}
+\caption{Complete allocation accounting. $^{\dagger}$Pixtral reviewer output is
+not scored by the same Pixtral evaluator. Detector rows are test inference, not
+training cost.}
+\label{tab:efficiency}
+\end{table}
+
+The full first review round consumes 45.0 GPU-hours, about 4.9 times the T2 test
+chain, for a 0.113-point gain on the 0--6 visual score. The second round adds 6.5
+GPU-hours and lowers the score by 0.020. For this dataset, frozen T2 is the
+efficient choice when object structure matters; full round 1 is the higher-cost
+choice when the small model-based visual-score gain is required.
+
+\section{Consolidated Findings}
+
+\paragraph{Detection.}
+Fine-tuned YOLO26x is the selected locator at 72.9 COCO AP. Performance remains
+crop-dependent, with date palm, chili, and luffa forming the lower tail. At its
+validation-frozen operating point, it reaches 76.1\% precision, 80.5\% recall,
+and 78.2\% F1.
+
+\paragraph{Domain adaptation.}
+T1 supplies the largest language improvement. Caption F1 rises from 5.8 to
+49.1, while the 27B zero-shot baseline reaches only 22.2. In this setting,
+in-domain supervision is more useful than increasing zero-shot model scale.
+
+\paragraph{Predicted proposals.}
+T2 improves exact object count and object-link F1 substantially, but its
+independent visual total is almost tied with T1. The proposals improve
+enumeration and association, not every claim's visual support.
+
+\paragraph{Agent Review.}
+One full round produces the best independent total of 4.288, but reduces count
+and linkage metrics and has high cost. A second round does not help. Review
+routing should therefore be selective rather than mandatory for every image.
+
+\section{Interpretation Boundaries}
+
+The results come from one agricultural collection and 11 crop categories.
+Geographic, seasonal, sensor, and farm-level generalization are not measured.
+Each configuration is represented by one frozen checkpoint on one fixed split;
+the tables are descriptive and do not estimate multi-seed variance or confidence
+intervals.
+Reference captions are reviewed GPT outputs rather than independent agronomist
+ground truth. The independent 0--6 score uses one visual model and has no human
+calibration. Human scoring was cancelled, so the report makes no inter-rater or
+expert-agreement claim. LocateAnything's constant score limits its AP ranking
+interpretation. Operating-point P/R/F1 values use different validation-frozen
+score policies and should not replace threshold-free AP. Unsupported-claim
+shares are Pixtral enumerations rather than human hallucination labels. Cost
+accounting follows actual scheduled chains and shared-stage charging rather
+than optimized serving.
+
+The system is decision support, not an autonomous treatment system. Generated
+disease, severity, confidence, and action fields may be unsupported even when
+object count is correct. Agronomist verification is required before acting on
+intervention recommendations.
+
+\section{Conclusion}
+
+The completed experiments separate three effects. Domain LoRA is responsible
+for most of the language-quality gain. Frozen detector proposals improve object
+enumeration and linkage. Agent Review supplies only a small additional
+model-based visual gain at substantially higher cost, and that gain saturates
+after one round. These results support a practical two-tier design: use T2 as
+the default structured writer and route only uncertain or high-risk cases to a
+single review round.
+
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,206 @@
+diff --git a/Embodied/eaglevl/dist_utils.py b/Embodied/eaglevl/dist_utils.py
+index 1a33d80..cfbc491 100644
+--- a/Embodied/eaglevl/dist_utils.py
++++ b/Embodied/eaglevl/dist_utils.py
+@@ -3,8 +3,6 @@ import socket
+ import subprocess
+ from datetime import timedelta
+ 
+-import deepspeed
+-
+ import torch
+ import torch.multiprocessing as mp
+ from torch import distributed as dist
+@@ -66,6 +64,13 @@ def _init_dist_mpi(backend, **kwargs):
+ 
+ 
+ def _init_dist_slurm(backend, port=None):
++    try:
++        import deepspeed
++    except ImportError as exc:
++        raise RuntimeError(
++            'The slurm launcher requires deepspeed; use LAUNCHER=pytorch '
++            'with torch.distributed.run when deepspeed is not installed.'
++        ) from exc
+     print("MASTER_PORT:",os.environ.get("MASTER_PORT", None))
+     print("MASTER_ADDR:",os.environ.get("MASTER_ADDR", None))
+     """Initialize slurm distributed training environment.
+diff --git a/Embodied/eaglevl/model/locany/modeling_locateanything.py b/Embodied/eaglevl/model/locany/modeling_locateanything.py
+index 765f0cd..69e9a65 100644
+--- a/Embodied/eaglevl/model/locany/modeling_locateanything.py
++++ b/Embodied/eaglevl/model/locany/modeling_locateanything.py
+@@ -27,7 +27,6 @@ from transformers.utils import ModelOutput, logging
+ from .configuration_locateanything import LocateAnythingConfig
+ from transformers.utils import add_start_docstrings, add_start_docstrings_to_model_forward, logging, replace_return_docstrings
+ from eaglevl.sp_utils import  (get_pg_manager, ring_split_for_sequence_parallel)
+-from eaglevl.train.liger_loss_weight_ops import LigerFusedLinearCrossEntropyLoss
+ 
+ 
+ logger = logging.get_logger(__name__)
+@@ -92,7 +91,11 @@ class LocateAnythingForConditionalGeneration(LocateAnythingPreTrainedModel, Gene
+             self.vision_model = vision_model
+         else:
+             if config.vision_config.model_type == 'moonvit':
+-                config.vision_config._attn_implementation = 'flash_attention_2'
++                config.vision_config._attn_implementation = (
++                    getattr(config.vision_config, '_attn_implementation', None)
++                    or getattr(config, '_attn_implementation', None)
++                    or 'sdpa'
++                )
+                 self.vision_model = MoonVitPretrainedModel(config.vision_config)
+             else:
+                 raise ValueError(f'Unsupported vision model type: {config.vision_config.model_type}. Only moonvit is supported.')
+@@ -299,8 +302,14 @@ class LocateAnythingForConditionalGeneration(LocateAnythingPreTrainedModel, Gene
+             shift_loss_weight = loss_weight[..., 1:].contiguous()
+             shift_loss_weight = shift_loss_weight.view(-1)
+ 
+-        liger_loss_fn = LigerFusedLinearCrossEntropyLoss(ignore_index=IGNORE_INDEX, reduction='mean')
+-        loss = liger_loss_fn(lm_head_weight, shift_hidden_states, shift_labels)
++        # The fused Liger kernel requests 2048 threads for this vocabulary,
++        # exceeding the 1024-thread workgroup limit on MI210. Computing only
++        # supervised positions keeps the standard PyTorch CE path efficient.
++        valid_label_mask = shift_labels.ne(IGNORE_INDEX)
++        valid_logits = torch.nn.functional.linear(
++            shift_hidden_states[valid_label_mask], lm_head_weight
++        )
++        loss = CrossEntropyLoss()(valid_logits.float(), shift_labels[valid_label_mask])
+         if not torch.isfinite(loss):
+             raise FloatingPointError(
+                 f"Non-finite loss detected before backward: loss={loss.detach().float().item()}, "
+diff --git a/Embodied/eaglevl/train/augmentation.py b/Embodied/eaglevl/train/augmentation.py
+index 98975d4..d80ada0 100644
+--- a/Embodied/eaglevl/train/augmentation.py
++++ b/Embodied/eaglevl/train/augmentation.py
+@@ -72,11 +72,17 @@ def apply_resize_augmentation(
+     if not data_augment:
+         return image
+     
+-    if random.random() < augment_prob:
+-        return image
+-    
+     width, height = image.size
+     current_long_edge = max(width, height)
++
++    # Always cap large camera images before tokenization. Otherwise the image
++    # context alone can exceed max_seq_length and be truncated out of sync
++    # with the vision patches.
++    if current_long_edge > max_long_edge:
++        return resize_image_keep_aspect_ratio(image, max_long_edge)
++
++    if random.random() < augment_prob:
++        return image
+     
+     target_long_edge = random.randint(min_long_edge, max_long_edge)
+     
+diff --git a/Embodied/eaglevl/train/locany_finetune_magi_stream.py b/Embodied/eaglevl/train/locany_finetune_magi_stream.py
+index 077c5b8..1d82a7e 100644
+--- a/Embodied/eaglevl/train/locany_finetune_magi_stream.py
++++ b/Embodied/eaglevl/train/locany_finetune_magi_stream.py
+@@ -518,7 +518,7 @@ class LazySupervisedDatasetMTP(Dataset):
+             image_inputs = [
+                 apply_resize_augmentation(
+                     img, data_augment=self.data_augment,
+-                    min_long_edge=640, max_long_edge=2560, augment_prob=0.5
++                    min_long_edge=640, max_long_edge=1792, augment_prob=0.5
+                 ) for img in image_inputs
+             ]
+         
+@@ -1334,9 +1334,12 @@ def main():
+         config._attn_implementation_autoset = False
+         config.text_config._attn_implementation = model_args.attn_implementation
+         config.text_config._attn_implementation_autoset = False
+-        config.vision_config._attn_implementation = 'flash_attention_2'
++        config.vision_config._attn_implementation = model_args.attn_implementation
+         config.vision_config._attn_implementation_autoset = False
+-        logger.info(f'Text attn: {model_args.attn_implementation}, Vision attn: flash_attention_2')
++        logger.info(
++            f'Text attn: {model_args.attn_implementation}, '
++            f'Vision attn: {model_args.attn_implementation}'
++        )
+ 
+         config.image_token_index = image_token_index
+         config.text_config.block_size = int(model_args.block_size)
+diff --git a/Embodied/eaglevl/train/tools.py b/Embodied/eaglevl/train/tools.py
+index 5ad14ff..ec052f0 100644
+--- a/Embodied/eaglevl/train/tools.py
++++ b/Embodied/eaglevl/train/tools.py
+@@ -25,15 +25,19 @@ from typing import List
+ 
+ import torch
+ import torch.distributed as dist
+-from pynvml import (
+-    NVML_TEMPERATURE_GPU,
+-    nvmlDeviceGetHandleByIndex,
+-    nvmlDeviceGetMemoryInfo,
+-    nvmlDeviceGetPowerUsage,
+-    nvmlDeviceGetTemperature,
+-    nvmlInit,
+-    nvmlShutdown,
+-)
++try:
++    from pynvml import (
++        NVML_TEMPERATURE_GPU,
++        nvmlDeviceGetHandleByIndex,
++        nvmlDeviceGetMemoryInfo,
++        nvmlDeviceGetPowerUsage,
++        nvmlDeviceGetTemperature,
++        nvmlInit,
++        nvmlShutdown,
++    )
++    _NVML_AVAILABLE = True
++except ImportError:
++    _NVML_AVAILABLE = False
+ from PIL import Image
+ from transformers import TrainerCallback
+ from transformers.trainer_utils import get_last_checkpoint
+@@ -136,28 +140,38 @@ class SkipIterCallback(TrainerCallback):
+ 
+ class MemoryLoggerCallback(TrainerCallback):
+     def __init__(self):
+-        nvmlInit()  
++        self.nvml_available = _NVML_AVAILABLE
++        if self.nvml_available:
++            try:
++                nvmlInit()
++            except Exception:
++                self.nvml_available = False
+         self.rank = dist.get_rank() if torch.distributed.is_initialized() else 0
+         self.device_id = torch.cuda.current_device()
+ 
+     def log_gpu_info(self, step):
+-        
+-        handle = nvmlDeviceGetHandleByIndex(self.device_id)
+-        mem_info = nvmlDeviceGetMemoryInfo(handle)
+-        temperature = nvmlDeviceGetTemperature(handle, NVML_TEMPERATURE_GPU)
+-        power_usage = nvmlDeviceGetPowerUsage(handle) / 1000
+-       
+-        print(f"[Step {step} | Rank {self.rank} / GPU {self.device_id}] "
+-              f"Memory: {mem_info.used / 1024**2:.2f} MB, "
+-              f"Temperature: {temperature}°C, "
+-              f"Power: {power_usage:.2f} W, ")
++        if self.nvml_available:
++            handle = nvmlDeviceGetHandleByIndex(self.device_id)
++            mem_info = nvmlDeviceGetMemoryInfo(handle)
++            temperature = nvmlDeviceGetTemperature(handle, NVML_TEMPERATURE_GPU)
++            power_usage = nvmlDeviceGetPowerUsage(handle) / 1000
++            detail = (
++                f"Memory: {mem_info.used / 1024**2:.2f} MB, "
++                f"Temperature: {temperature}°C, Power: {power_usage:.2f} W"
++            )
++        else:
++            allocated = torch.cuda.memory_allocated(self.device_id) / 1024**2
++            reserved = torch.cuda.memory_reserved(self.device_id) / 1024**2
++            detail = f"Allocated: {allocated:.2f} MB, Reserved: {reserved:.2f} MB"
++        print(f"[Step {step} | Rank {self.rank} / GPU {self.device_id}] {detail}")
+ 
+     def on_step_end(self, args, state, control, **kwargs):
+         if self.rank % 32 == 0:
+             self.log_gpu_info(state.global_step)
+ 
+     def __del__(self):
+-        nvmlShutdown()
++        if getattr(self, 'nvml_available', False):
++            nvmlShutdown()
+ 
+ 
+ class MilestoneCheckpointCallback(TrainerCallback):

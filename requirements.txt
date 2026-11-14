@@ -1,0 +1,5 @@
+numpy>=1.26
+Pillow>=10.0
+pillow-heif>=0.16
+pycocotools>=2.0.7
+pytest>=8.0

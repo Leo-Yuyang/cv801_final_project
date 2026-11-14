@@ -1,0 +1,3123 @@
+{
+  "protocol": "cv801_golden_final_summary_v1",
+  "generated_at_utc": "2026-11-13T15:50:23.213484+00:00",
+  "dataset": {
+    "images": 8097,
+    "objects": 14601,
+    "golden_images": 1000
+  },
+  "detection": {
+    "yolo26x": {
+      "metric_contract": "pycocotools_cocoeval_bbox_v2_operating_point",
+      "model": "YOLO26x fine-tuned",
+      "split": "validation",
+      "ground_truth": "datas/cv801_detection_v1/coco/instances_test.json",
+      "predictions": "wkdrs/cv801-golden-test/detection-yolo-403226/predictions.coco.json",
+      "score_policy": "native_model_score; AP conf=0.001; nms_iou=0.7; operating threshold=0.404 selected on validation F1 curve",
+      "evaluated_images": 1000,
+      "prediction_count": 14280,
+      "metrics": {
+        "AP_50_95": 0.7288467921417757,
+        "AP50": 0.822074012826154,
+        "AP75": 0.7670098440224643,
+        "AP_small": null,
+        "AP_medium": null,
+        "AP_large": 0.7288910468196184,
+        "AR_max1": 0.5331630427042514,
+        "AR_max10": 0.829174538469119,
+        "AR_max100": 0.8500240493508301,
+        "AR_small": null,
+        "AR_medium": null,
+        "AR_large": 0.8500240493508301
+      },
+      "operating_point": {
+        "score_threshold": 0.404,
+        "iou_threshold": 0.5,
+        "averaging": "micro",
+        "matching": "class-aware greedy one-to-one in descending score order",
+        "ground_truth_count": 1747,
+        "included_predictions": 1848,
+        "true_positives": 1406,
+        "false_positives": 442,
+        "false_negatives": 341,
+        "precision": 0.7608225108225108,
+        "recall": 0.8048082427017744,
+        "f1": 0.7821974965229485,
+        "mean_matched_iou": 0.9429569775965781
+      },
+      "per_category": {
+        "bitter_gourd": {
+          "AP_50_95": 0.7426986687161098,
+          "AP50": 0.8555218318783226
+        },
+        "cauliflower": {
+          "AP_50_95": 0.8355717639466199,
+          "AP50": 0.9229318145928322
+        },
+        "cherry_tomato": {
+          "AP_50_95": 0.8432939209820619,
+          "AP50": 0.9226349331390088
+        },
+        "chili": {
+          "AP_50_95": 0.5282509041908914,
+          "AP50": 0.6975560747769592
+        },
+        "date_palm": {
+          "AP_50_95": 0.4393303111177963,
+          "AP50": 0.481362316452239
+        },
+        "eggplant": {
+          "AP_50_95": 0.8491260408821724,
+          "AP50": 0.9387246731385921
+        },
+        "fig": {
+          "AP_50_95": 0.7412111484181421,
+          "AP50": 0.808171923897156
+        },
+        "lemon": {
+          "AP_50_95": 0.8743913833818127,
+          "AP50": 0.9358631778242597
+        },
+        "luffa": {
+          "AP_50_95": 0.5808104086434405,
+          "AP50": 0.7317062132629519
+        },
+        "mulberry": {
+          "AP_50_95": 0.7524575549365307,
+          "AP50": 0.8326650402280911
+        },
+        "tomato": {
+          "AP_50_95": 0.8301726083439546,
+          "AP50": 0.915676141897282
+        }
+      }
+    },
+    "grounding_dino": {
+      "metric_contract": "pycocotools_cocoeval_bbox_v2_operating_point",
+      "model": "Grounding DINO Tiny fine-tuned",
+      "split": "validation",
+      "ground_truth": "datas/cv801_detection_v1/coco/instances_test.json",
+      "predictions": "wkdrs/cv801-golden-test/detection-grounding_dino-403227/predictions.coco.json",
+      "score_policy": "native_model_score; AP box/text threshold=0.01; nms_iou=0.6; operating threshold=0.25091278553009033 selected on validation micro-F1",
+      "evaluated_images": 1000,
+      "prediction_count": 73517,
+      "metrics": {
+        "AP_50_95": 0.264745175557883,
+        "AP50": 0.2815405717308357,
+        "AP75": 0.2699626787825095,
+        "AP_small": null,
+        "AP_medium": null,
+        "AP_large": 0.2647458427403886,
+        "AR_max1": 0.5353686078384486,
+        "AR_max10": 0.897452530057317,
+        "AR_max100": 0.9081484530665569,
+        "AR_small": null,
+        "AR_medium": null,
+        "AR_large": 0.9081484530665569
+      },
+      "operating_point": {
+        "score_threshold": 0.25091278553009033,
+        "iou_threshold": 0.5,
+        "averaging": "micro",
+        "matching": "class-aware greedy one-to-one in descending score order",
+        "ground_truth_count": 1747,
+        "included_predictions": 4610,
+        "true_positives": 1039,
+        "false_positives": 3571,
+        "false_negatives": 708,
+        "precision": 0.22537960954446853,
+        "recall": 0.594733829421866,
+        "f1": 0.3268837501966336,
+        "mean_matched_iou": 0.9712199072762904
+      },
+      "per_category": {
+        "bitter_gourd": {
+          "AP_50_95": 0.19123247833405005,
+          "AP50": 0.20553271773757986
+        },
+        "cauliflower": {
+          "AP_50_95": 0.45068029363410766,
+          "AP50": 0.47720677390936966
+        },
+        "cherry_tomato": {
+          "AP_50_95": 0.5697419279989855,
+          "AP50": 0.5935448417037184
+        },
+        "chili": {
+          "AP_50_95": 0.08802012933202702,
+          "AP50": 0.11452037494509672
+        },
+        "date_palm": {
+          "AP_50_95": 0.08366528063291728,
+          "AP50": 0.08926122626996896
+        },
+        "eggplant": {
+          "AP_50_95": 0.6490295627599445,
+          "AP50": 0.6846051389799193
+        },
+        "fig": {
+          "AP_50_95": 0.11951740653398786,
+          "AP50": 0.12805649139621586
+        },
+        "lemon": {
+          "AP_50_95": 0.19452609120624775,
+          "AP50": 0.20430278568512816
+        },
+        "luffa": {
+          "AP_50_95": 0.07849479968807971,
+          "AP50": 0.09048077085192349
+        },
+        "mulberry": {
+          "AP_50_95": 0.18941967306968346,
+          "AP50": 0.2008133935814706
+        },
+        "tomato": {
+          "AP_50_95": 0.29786928794668194,
+          "AP50": 0.30862177397880153
+        }
+      }
+    },
+    "locateanything": {
+      "metric_contract": "pycocotools_cocoeval_bbox_v2_operating_point",
+      "model": "LocateAnything 3B fine-tuned",
+      "split": "validation",
+      "ground_truth": "datas/cv801_detection_v1/coco/instances_test.json",
+      "predictions": "wkdrs/cv801-golden-test/detection-locateanything-403228/predictions.coco.json",
+      "score_policy": "constant_0.2_no_native_confidence; operating threshold=0.2 includes all decoded boxes; generation_order_ties",
+      "evaluated_images": 1000,
+      "prediction_count": 1468,
+      "metrics": {
+        "AP_50_95": 0.5332954278012827,
+        "AP50": 0.6180303872858958,
+        "AP75": 0.5532308633675357,
+        "AP_small": null,
+        "AP_medium": null,
+        "AP_large": 0.5332954278012827,
+        "AR_max1": 0.5005795782318877,
+        "AR_max10": 0.6406075369729191,
+        "AR_max100": 0.6406075369729191,
+        "AR_small": null,
+        "AR_medium": null,
+        "AR_large": 0.6406075369729191
+      },
+      "operating_point": {
+        "score_threshold": 0.2,
+        "iou_threshold": 0.5,
+        "averaging": "micro",
+        "matching": "class-aware greedy one-to-one in descending score order",
+        "ground_truth_count": 1747,
+        "included_predictions": 1468,
+        "true_positives": 1252,
+        "false_positives": 216,
+        "false_negatives": 495,
+        "precision": 0.8528610354223434,
+        "recall": 0.7166571265025758,
+        "f1": 0.7788491446345257,
+        "mean_matched_iou": 0.9495854879594187
+      },
+      "per_category": {
+        "bitter_gourd": {
+          "AP_50_95": 0.47757912619045645,
+          "AP50": 0.5617161716171616
+        },
+        "cauliflower": {
+          "AP_50_95": 0.6915369270175205,
+          "AP50": 0.7550751159251077
+        },
+        "cherry_tomato": {
+          "AP_50_95": 0.6004069157791201,
+          "AP50": 0.657842341839663
+        },
+        "chili": {
+          "AP_50_95": 0.3235796094858659,
+          "AP50": 0.46632421306646793
+        },
+        "date_palm": {
+          "AP_50_95": 0.38346441121844976,
+          "AP50": 0.4612899346614823
+        },
+        "eggplant": {
+          "AP_50_95": 0.7240611831467993,
+          "AP50": 0.8081393198742626
+        },
+        "fig": {
+          "AP_50_95": 0.4600340762179747,
+          "AP50": 0.548635733563815
+        },
+        "lemon": {
+          "AP_50_95": 0.7476559151792358,
+          "AP50": 0.7792079010801665
+        },
+        "luffa": {
+          "AP_50_95": 0.38786184973012344,
+          "AP50": 0.570912944137223
+        },
+        "mulberry": {
+          "AP_50_95": 0.45435484506776985,
+          "AP50": 0.5278494277188492
+        },
+        "tomato": {
+          "AP_50_95": 0.6157148467807936,
+          "AP50": 0.6613411566606553
+        }
+      }
+    }
+  },
+  "vlm": {
+    "t0": {
+      "metric_contract": "cv801_vlm_structured_v3_all_samples",
+      "label_source": "reviewed_gpt_caption_not_independent_reference",
+      "samples": 1000,
+      "json_valid_rate": 0.976,
+      "schema_valid_rate": 0.0,
+      "think_prefix_rate": 1.0,
+      "forbidden_box_output_rate": 0.0,
+      "crop_exact_rate": 0.976,
+      "plant_part_exact_rate": 0.976,
+      "object_count_exact_rate": 0.572,
+      "object_count_mae": 2.06,
+      "object_count_precision": 0.43138974134151686,
+      "object_count_recall": 0.5632512879221523,
+      "object_id_link_precision": 0.43138974134151686,
+      "object_id_link_recall": 0.5632512879221523,
+      "object_id_link_f1": 0.4885799404170804,
+      "object_id_set_exact_rate": 0.572,
+      "duplicate_object_id_rate": 0.0,
+      "extra_object_hallucination_proxy_rate": 0.5686102586584831,
+      "samples_with_extra_object_rate": 0.028,
+      "caption_token_f1": 0.05760269670107007,
+      "caption_bleu4_corpus": 0.0,
+      "caption_rouge_l_f1": 0.05735435937470164,
+      "action_token_f1": 0.006077047388022998,
+      "confidence_mae": null,
+      "categorical_exact": {
+        "object_id": 1.0,
+        "image_quality": 0.5193089430894309,
+        "stage": null,
+        "disease": null,
+        "severity": null
+      },
+      "metric_notes": {
+        "caption_matching": "unique object_id matches only",
+        "caption_bleu4_corpus": "lowercase alphanumeric tokens; single reference; unsmoothed corpus BLEU-4",
+        "caption_rouge_l_f1": "mean object-level ROUGE-L F1 over unique object_id matches",
+        "extra_object_hallucination_proxy_rate": "surplus predicted objects divided by all predicted objects; this is not a visual claim-level hallucination score",
+        "object_id_link_metrics": "reference-ID association only; visual linkage correctness requires an independent image evaluator"
+      },
+      "counts": {
+        "crop_exact": 976,
+        "extra_predicted_objects": 1297,
+        "id_matched_objects": 984,
+        "image_quality_exact": 511,
+        "image_quality_total": 984,
+        "index_matched_objects": 984,
+        "json_valid": 976,
+        "object_count_exact": 572,
+        "object_id_exact": 984,
+        "object_id_set_exact": 572,
+        "object_id_total": 984,
+        "plant_part_exact": 976,
+        "predicted_objects": 2281,
+        "reference_objects": 1747,
+        "samples": 1000,
+        "samples_with_extra_objects": 28,
+        "think_prefix_stripped": 1000
+      }
+    },
+    "t1": {
+      "metric_contract": "cv801_vlm_structured_v3_all_samples",
+      "label_source": "reviewed_gpt_caption_not_independent_reference",
+      "samples": 1000,
+      "json_valid_rate": 0.888,
+      "schema_valid_rate": 0.888,
+      "think_prefix_rate": 1.0,
+      "forbidden_box_output_rate": 0.0,
+      "crop_exact_rate": 0.888,
+      "plant_part_exact_rate": 0.888,
+      "object_count_exact_rate": 0.529,
+      "object_count_mae": 1.48,
+      "object_count_precision": 0.5689922480620155,
+      "object_count_recall": 0.6302232398397253,
+      "object_id_link_precision": 0.5679586563307494,
+      "object_id_link_recall": 0.6290784201488265,
+      "object_id_link_f1": 0.596958174904943,
+      "object_id_set_exact_rate": 0.529,
+      "duplicate_object_id_rate": 0.1281653746770026,
+      "extra_object_hallucination_proxy_rate": 0.4310077519379845,
+      "samples_with_extra_object_rate": 0.149,
+      "caption_token_f1": 0.49141701542132254,
+      "caption_bleu4_corpus": 0.14030481411602713,
+      "caption_rouge_l_f1": 0.39011381241087,
+      "action_token_f1": 0.4197157389479015,
+      "confidence_mae": 0.1315622161671208,
+      "categorical_exact": {
+        "object_id": 0.997275204359673,
+        "image_quality": 0.5140781108083561,
+        "stage": 0.7315175097276264,
+        "disease": 0.40417801998183467,
+        "severity": 0.3932788374205268
+      },
+      "metric_notes": {
+        "caption_matching": "unique object_id matches only",
+        "caption_bleu4_corpus": "lowercase alphanumeric tokens; single reference; unsmoothed corpus BLEU-4",
+        "caption_rouge_l_f1": "mean object-level ROUGE-L F1 over unique object_id matches",
+        "extra_object_hallucination_proxy_rate": "surplus predicted objects divided by all predicted objects; this is not a visual claim-level hallucination score",
+        "object_id_link_metrics": "reference-ID association only; visual linkage correctness requires an independent image evaluator"
+      },
+      "counts": {
+        "crop_exact": 888,
+        "disease_exact": 445,
+        "disease_total": 1101,
+        "duplicate_predicted_object_ids": 248,
+        "extra_predicted_objects": 834,
+        "id_matched_objects": 1099,
+        "image_quality_exact": 566,
+        "image_quality_total": 1101,
+        "index_matched_objects": 1101,
+        "json_valid": 888,
+        "object_count_exact": 529,
+        "object_id_exact": 1098,
+        "object_id_set_exact": 529,
+        "object_id_total": 1101,
+        "plant_part_exact": 888,
+        "predicted_objects": 1935,
+        "reference_objects": 1747,
+        "samples": 1000,
+        "samples_with_extra_objects": 149,
+        "schema_valid": 888,
+        "severity_exact": 433,
+        "severity_total": 1101,
+        "stage_exact": 376,
+        "stage_total": 514,
+        "think_prefix_stripped": 1000
+      }
+    },
+    "t2": {
+      "metric_contract": "cv801_vlm_structured_v3_all_samples",
+      "label_source": "reviewed_gpt_caption_not_independent_reference",
+      "samples": 1000,
+      "json_valid_rate": 0.995,
+      "schema_valid_rate": 0.995,
+      "think_prefix_rate": 1.0,
+      "forbidden_box_output_rate": 0.0,
+      "crop_exact_rate": 0.994,
+      "plant_part_exact_rate": 0.995,
+      "object_count_exact_rate": 0.641,
+      "object_count_mae": 0.949,
+      "object_count_precision": 0.6718346253229974,
+      "object_count_recall": 0.8929593589009731,
+      "object_id_link_precision": 0.6718346253229974,
+      "object_id_link_recall": 0.8929593589009731,
+      "object_id_link_f1": 0.7667731629392971,
+      "object_id_set_exact_rate": 0.641,
+      "duplicate_object_id_rate": 0.13135228251507322,
+      "extra_object_hallucination_proxy_rate": 0.3281653746770026,
+      "samples_with_extra_object_rate": 0.222,
+      "caption_token_f1": 0.5130207561367792,
+      "caption_bleu4_corpus": 0.15513456538442486,
+      "caption_rouge_l_f1": 0.42207409405658386,
+      "action_token_f1": 0.37041945253536573,
+      "confidence_mae": 0.14481410256410257,
+      "categorical_exact": {
+        "object_id": 0.9967948717948718,
+        "image_quality": 0.49423076923076925,
+        "stage": 0.6080760095011877,
+        "disease": 0.4217948717948718,
+        "severity": 0.41025641025641024
+      },
+      "metric_notes": {
+        "caption_matching": "unique object_id matches only",
+        "caption_bleu4_corpus": "lowercase alphanumeric tokens; single reference; unsmoothed corpus BLEU-4",
+        "caption_rouge_l_f1": "mean object-level ROUGE-L F1 over unique object_id matches",
+        "extra_object_hallucination_proxy_rate": "surplus predicted objects divided by all predicted objects; this is not a visual claim-level hallucination score",
+        "object_id_link_metrics": "reference-ID association only; visual linkage correctness requires an independent image evaluator"
+      },
+      "counts": {
+        "crop_exact": 994,
+        "disease_exact": 658,
+        "disease_total": 1560,
+        "duplicate_predicted_object_ids": 305,
+        "extra_predicted_objects": 762,
+        "id_matched_objects": 1560,
+        "image_quality_exact": 771,
+        "image_quality_total": 1560,
+        "index_matched_objects": 1560,
+        "json_valid": 995,
+        "object_count_exact": 641,
+        "object_id_exact": 1555,
+        "object_id_set_exact": 641,
+        "object_id_total": 1560,
+        "plant_part_exact": 995,
+        "predicted_objects": 2322,
+        "reference_objects": 1747,
+        "samples": 1000,
+        "samples_with_extra_objects": 222,
+        "schema_valid": 995,
+        "severity_exact": 640,
+        "severity_total": 1560,
+        "stage_exact": 512,
+        "stage_total": 842,
+        "think_prefix_stripped": 1000
+      }
+    },
+    "qwen35_27b": {
+      "metric_contract": "cv801_vlm_structured_v3_all_samples",
+      "label_source": "reviewed_gpt_caption_not_independent_reference",
+      "samples": 1000,
+      "json_valid_rate": 0.984,
+      "schema_valid_rate": 0.0,
+      "think_prefix_rate": 1.0,
+      "forbidden_box_output_rate": 0.0,
+      "crop_exact_rate": 0.636,
+      "plant_part_exact_rate": 0.937,
+      "object_count_exact_rate": 0.604,
+      "object_count_mae": 0.768,
+      "object_count_precision": 0.9919597989949749,
+      "object_count_recall": 0.5649685174585003,
+      "object_id_link_precision": 0.9919597989949749,
+      "object_id_link_recall": 0.5649685174585003,
+      "object_id_link_f1": 0.7199124726477025,
+      "object_id_set_exact_rate": 0.604,
+      "duplicate_object_id_rate": 0.0,
+      "extra_object_hallucination_proxy_rate": 0.008040201005025126,
+      "samples_with_extra_object_rate": 0.004,
+      "caption_token_f1": 0.22248608106454928,
+      "caption_bleu4_corpus": 0.0040159430878388075,
+      "caption_rouge_l_f1": 0.1744113962763245,
+      "action_token_f1": 0.0380774824553109,
+      "confidence_mae": 0.20289256198347105,
+      "categorical_exact": {
+        "object_id": 1.0,
+        "image_quality": 0.1762917933130699,
+        "stage": null,
+        "disease": null,
+        "severity": null
+      },
+      "metric_notes": {
+        "caption_matching": "unique object_id matches only",
+        "caption_bleu4_corpus": "lowercase alphanumeric tokens; single reference; unsmoothed corpus BLEU-4",
+        "caption_rouge_l_f1": "mean object-level ROUGE-L F1 over unique object_id matches",
+        "extra_object_hallucination_proxy_rate": "surplus predicted objects divided by all predicted objects; this is not a visual claim-level hallucination score",
+        "object_id_link_metrics": "reference-ID association only; visual linkage correctness requires an independent image evaluator"
+      },
+      "counts": {
+        "crop_exact": 636,
+        "extra_predicted_objects": 8,
+        "id_matched_objects": 987,
+        "image_quality_exact": 174,
+        "image_quality_total": 987,
+        "index_matched_objects": 987,
+        "json_valid": 984,
+        "object_count_exact": 604,
+        "object_id_exact": 987,
+        "object_id_set_exact": 604,
+        "object_id_total": 987,
+        "plant_part_exact": 937,
+        "predicted_objects": 995,
+        "reference_objects": 1747,
+        "samples": 1000,
+        "samples_with_extra_objects": 4,
+        "think_prefix_stripped": 1000
+      }
+    },
+    "rd": {
+      "metric_contract": "cv801_vlm_structured_v3_all_samples",
+      "label_source": "reviewed_gpt_caption_not_independent_reference",
+      "samples": 1000,
+      "json_valid_rate": 0.956,
+      "schema_valid_rate": 0.956,
+      "think_prefix_rate": 1.0,
+      "forbidden_box_output_rate": 0.0,
+      "crop_exact_rate": 0.769,
+      "plant_part_exact_rate": 0.952,
+      "object_count_exact_rate": 0.592,
+      "object_count_mae": 0.768,
+      "object_count_precision": 0.9949443882709808,
+      "object_count_recall": 0.5632512879221523,
+      "object_id_link_precision": 0.9919110212335692,
+      "object_id_link_recall": 0.5615340583858043,
+      "object_id_link_f1": 0.7171052631578948,
+      "object_id_set_exact_rate": 0.592,
+      "duplicate_object_id_rate": 0.0010111223458038423,
+      "extra_object_hallucination_proxy_rate": 0.005055611729019211,
+      "samples_with_extra_object_rate": 0.004,
+      "caption_token_f1": 0.5088397589747438,
+      "caption_bleu4_corpus": 0.1571289657170652,
+      "caption_rouge_l_f1": 0.41815195383661985,
+      "action_token_f1": 0.40326605521867287,
+      "confidence_mae": 0.13468495934959349,
+      "categorical_exact": {
+        "object_id": 0.9928861788617886,
+        "image_quality": 0.5264227642276422,
+        "stage": 0.6257545271629779,
+        "disease": 0.4095528455284553,
+        "severity": 0.38414634146341464
+      },
+      "metric_notes": {
+        "caption_matching": "unique object_id matches only",
+        "caption_bleu4_corpus": "lowercase alphanumeric tokens; single reference; unsmoothed corpus BLEU-4",
+        "caption_rouge_l_f1": "mean object-level ROUGE-L F1 over unique object_id matches",
+        "extra_object_hallucination_proxy_rate": "surplus predicted objects divided by all predicted objects; this is not a visual claim-level hallucination score",
+        "object_id_link_metrics": "reference-ID association only; visual linkage correctness requires an independent image evaluator"
+      },
+      "counts": {
+        "crop_exact": 769,
+        "disease_exact": 403,
+        "disease_total": 984,
+        "duplicate_predicted_object_ids": 1,
+        "extra_predicted_objects": 5,
+        "id_matched_objects": 981,
+        "image_quality_exact": 518,
+        "image_quality_total": 984,
+        "index_matched_objects": 984,
+        "json_valid": 956,
+        "object_count_exact": 592,
+        "object_id_exact": 977,
+        "object_id_set_exact": 592,
+        "object_id_total": 984,
+        "plant_part_exact": 952,
+        "predicted_objects": 989,
+        "reference_objects": 1747,
+        "samples": 1000,
+        "samples_with_extra_objects": 4,
+        "schema_valid": 956,
+        "severity_exact": 378,
+        "severity_total": 984,
+        "stage_exact": 311,
+        "stage_total": 497,
+        "think_prefix_stripped": 1000
+      }
+    },
+    "rc": {
+      "metric_contract": "cv801_vlm_structured_v3_all_samples",
+      "label_source": "reviewed_gpt_caption_not_independent_reference",
+      "samples": 1000,
+      "json_valid_rate": 0.938,
+      "schema_valid_rate": 0.938,
+      "think_prefix_rate": 1.0,
+      "forbidden_box_output_rate": 0.0,
+      "crop_exact_rate": 0.722,
+      "plant_part_exact_rate": 0.935,
+      "object_count_exact_rate": 0.567,
+      "object_count_mae": 0.797,
+      "object_count_precision": 0.9927385892116183,
+      "object_count_recall": 0.54779622209502,
+      "object_id_link_precision": 0.991701244813278,
+      "object_id_link_recall": 0.5472238122495707,
+      "object_id_link_f1": 0.7052748063445224,
+      "object_id_set_exact_rate": 0.566,
+      "duplicate_object_id_rate": 0.001037344398340249,
+      "extra_object_hallucination_proxy_rate": 0.007261410788381743,
+      "samples_with_extra_object_rate": 0.004,
+      "caption_token_f1": 0.5126801058077981,
+      "caption_bleu4_corpus": 0.1588532862408032,
+      "caption_rouge_l_f1": 0.42450649348426395,
+      "action_token_f1": 0.41149026225231655,
+      "confidence_mae": 0.13275862068965516,
+      "categorical_exact": {
+        "object_id": 0.9958202716823407,
+        "image_quality": 0.5287356321839081,
+        "stage": 0.5873015873015873,
+        "disease": 0.44096133751306166,
+        "severity": 0.4263322884012539
+      },
+      "metric_notes": {
+        "caption_matching": "unique object_id matches only",
+        "caption_bleu4_corpus": "lowercase alphanumeric tokens; single reference; unsmoothed corpus BLEU-4",
+        "caption_rouge_l_f1": "mean object-level ROUGE-L F1 over unique object_id matches",
+        "extra_object_hallucination_proxy_rate": "surplus predicted objects divided by all predicted objects; this is not a visual claim-level hallucination score",
+        "object_id_link_metrics": "reference-ID association only; visual linkage correctness requires an independent image evaluator"
+      },
+      "counts": {
+        "crop_exact": 722,
+        "disease_exact": 422,
+        "disease_total": 957,
+        "duplicate_predicted_object_ids": 1,
+        "extra_predicted_objects": 7,
+        "id_matched_objects": 956,
+        "image_quality_exact": 506,
+        "image_quality_total": 957,
+        "index_matched_objects": 957,
+        "json_valid": 938,
+        "object_count_exact": 567,
+        "object_id_exact": 953,
+        "object_id_set_exact": 566,
+        "object_id_total": 957,
+        "plant_part_exact": 935,
+        "predicted_objects": 964,
+        "reference_objects": 1747,
+        "samples": 1000,
+        "samples_with_extra_objects": 4,
+        "schema_valid": 938,
+        "severity_exact": 408,
+        "severity_total": 957,
+        "stage_exact": 296,
+        "stage_total": 504,
+        "think_prefix_stripped": 1000
+      }
+    },
+    "rc_rd": {
+      "metric_contract": "cv801_vlm_structured_v3_all_samples",
+      "label_source": "reviewed_gpt_caption_not_independent_reference",
+      "samples": 1000,
+      "json_valid_rate": 0.956,
+      "schema_valid_rate": 0.956,
+      "think_prefix_rate": 1.0,
+      "forbidden_box_output_rate": 0.0,
+      "crop_exact_rate": 0.665,
+      "plant_part_exact_rate": 0.951,
+      "object_count_exact_rate": 0.594,
+      "object_count_mae": 0.94,
+      "object_count_precision": 0.8445772843723314,
+      "object_count_recall": 0.5661133371493989,
+      "object_id_link_precision": 0.842869342442357,
+      "object_id_link_recall": 0.5649685174585003,
+      "object_id_link_f1": 0.6764907470870458,
+      "object_id_set_exact_rate": 0.594,
+      "duplicate_object_id_rate": 0.13919726729291204,
+      "extra_object_hallucination_proxy_rate": 0.15542271562766866,
+      "samples_with_extra_object_rate": 0.009,
+      "caption_token_f1": 0.500769776772077,
+      "caption_bleu4_corpus": 0.14790462251667663,
+      "caption_rouge_l_f1": 0.4115209377539329,
+      "action_token_f1": 0.4025028519131665,
+      "confidence_mae": 0.13186046511627908,
+      "categorical_exact": {
+        "object_id": 0.993933265925177,
+        "image_quality": 0.5085945399393327,
+        "stage": 0.5846456692913385,
+        "disease": 0.41759352881698686,
+        "severity": 0.39838220424671383
+      },
+      "metric_notes": {
+        "caption_matching": "unique object_id matches only",
+        "caption_bleu4_corpus": "lowercase alphanumeric tokens; single reference; unsmoothed corpus BLEU-4",
+        "caption_rouge_l_f1": "mean object-level ROUGE-L F1 over unique object_id matches",
+        "extra_object_hallucination_proxy_rate": "surplus predicted objects divided by all predicted objects; this is not a visual claim-level hallucination score",
+        "object_id_link_metrics": "reference-ID association only; visual linkage correctness requires an independent image evaluator"
+      },
+      "counts": {
+        "crop_exact": 665,
+        "disease_exact": 413,
+        "disease_total": 989,
+        "duplicate_predicted_object_ids": 163,
+        "extra_predicted_objects": 182,
+        "id_matched_objects": 987,
+        "image_quality_exact": 503,
+        "image_quality_total": 989,
+        "index_matched_objects": 989,
+        "json_valid": 956,
+        "object_count_exact": 594,
+        "object_id_exact": 983,
+        "object_id_set_exact": 594,
+        "object_id_total": 989,
+        "plant_part_exact": 951,
+        "predicted_objects": 1171,
+        "reference_objects": 1747,
+        "samples": 1000,
+        "samples_with_extra_objects": 9,
+        "schema_valid": 956,
+        "severity_exact": 394,
+        "severity_total": 989,
+        "stage_exact": 297,
+        "stage_total": 508,
+        "think_prefix_stripped": 1000
+      }
+    },
+    "full_round1": {
+      "metric_contract": "cv801_vlm_structured_v3_all_samples",
+      "label_source": "reviewed_gpt_caption_not_independent_reference",
+      "samples": 1000,
+      "json_valid_rate": 0.916,
+      "schema_valid_rate": 0.912,
+      "think_prefix_rate": 1.0,
+      "forbidden_box_output_rate": 0.0,
+      "crop_exact_rate": 0.792,
+      "plant_part_exact_rate": 0.9,
+      "object_count_exact_rate": 0.583,
+      "object_count_mae": 0.794,
+      "object_count_precision": 0.9808274470232089,
+      "object_count_recall": 0.5563823697767601,
+      "object_id_link_precision": 0.9788092835519677,
+      "object_id_link_recall": 0.5552375500858615,
+      "object_id_link_f1": 0.7085463842220598,
+      "object_id_set_exact_rate": 0.582,
+      "duplicate_object_id_rate": 0.0,
+      "extra_object_hallucination_proxy_rate": 0.01917255297679112,
+      "samples_with_extra_object_rate": 0.015,
+      "caption_token_f1": 0.5126982280096823,
+      "caption_bleu4_corpus": 0.15884799302102068,
+      "caption_rouge_l_f1": 0.4218444604128202,
+      "action_token_f1": 0.40979127404330035,
+      "confidence_mae": 0.13541152263374487,
+      "categorical_exact": {
+        "object_id": 0.9969135802469136,
+        "image_quality": 0.5627572016460906,
+        "stage": 0.6108870967741935,
+        "disease": 0.44238683127572015,
+        "severity": 0.43004115226337447
+      },
+      "metric_notes": {
+        "caption_matching": "unique object_id matches only",
+        "caption_bleu4_corpus": "lowercase alphanumeric tokens; single reference; unsmoothed corpus BLEU-4",
+        "caption_rouge_l_f1": "mean object-level ROUGE-L F1 over unique object_id matches",
+        "extra_object_hallucination_proxy_rate": "surplus predicted objects divided by all predicted objects; this is not a visual claim-level hallucination score",
+        "object_id_link_metrics": "reference-ID association only; visual linkage correctness requires an independent image evaluator"
+      },
+      "counts": {
+        "crop_exact": 792,
+        "disease_exact": 430,
+        "disease_total": 972,
+        "extra_predicted_objects": 19,
+        "id_matched_objects": 970,
+        "image_quality_exact": 547,
+        "image_quality_total": 972,
+        "index_matched_objects": 972,
+        "json_valid": 916,
+        "object_count_exact": 583,
+        "object_id_exact": 969,
+        "object_id_set_exact": 582,
+        "object_id_total": 972,
+        "plant_part_exact": 900,
+        "predicted_objects": 991,
+        "reference_objects": 1747,
+        "samples": 1000,
+        "samples_with_extra_objects": 15,
+        "schema_valid": 912,
+        "severity_exact": 418,
+        "severity_total": 972,
+        "stage_exact": 303,
+        "stage_total": 496,
+        "think_prefix_stripped": 1000
+      }
+    },
+    "full_round2": {
+      "metric_contract": "cv801_vlm_structured_v3_all_samples",
+      "label_source": "reviewed_gpt_caption_not_independent_reference",
+      "samples": 1000,
+      "json_valid_rate": 0.978,
+      "schema_valid_rate": 0.974,
+      "think_prefix_rate": 1.0,
+      "forbidden_box_output_rate": 0.0,
+      "crop_exact_rate": 0.857,
+      "plant_part_exact_rate": 0.955,
+      "object_count_exact_rate": 0.596,
+      "object_count_mae": 0.833,
+      "object_count_precision": 0.8905982905982905,
+      "object_count_recall": 0.596451058958214,
+      "object_id_link_precision": 0.8905982905982905,
+      "object_id_link_recall": 0.596451058958214,
+      "object_id_link_f1": 0.7144326362701405,
+      "object_id_set_exact_rate": 0.596,
+      "duplicate_object_id_rate": 0.08034188034188035,
+      "extra_object_hallucination_proxy_rate": 0.1094017094017094,
+      "samples_with_extra_object_rate": 0.012,
+      "caption_token_f1": 0.504487976278153,
+      "caption_bleu4_corpus": 0.1496692138294354,
+      "caption_rouge_l_f1": 0.414979477548382,
+      "action_token_f1": 0.39370603170517665,
+      "confidence_mae": 0.13132437619961612,
+      "categorical_exact": {
+        "object_id": 1.0,
+        "image_quality": 0.527831094049904,
+        "stage": 0.6018018018018018,
+        "disease": 0.43282149712092133,
+        "severity": 0.41362763915547024
+      },
+      "metric_notes": {
+        "caption_matching": "unique object_id matches only",
+        "caption_bleu4_corpus": "lowercase alphanumeric tokens; single reference; unsmoothed corpus BLEU-4",
+        "caption_rouge_l_f1": "mean object-level ROUGE-L F1 over unique object_id matches",
+        "extra_object_hallucination_proxy_rate": "surplus predicted objects divided by all predicted objects; this is not a visual claim-level hallucination score",
+        "object_id_link_metrics": "reference-ID association only; visual linkage correctness requires an independent image evaluator"
+      },
+      "counts": {
+        "crop_exact": 857,
+        "disease_exact": 451,
+        "disease_total": 1042,
+        "duplicate_predicted_object_ids": 94,
+        "extra_predicted_objects": 128,
+        "id_matched_objects": 1042,
+        "image_quality_exact": 550,
+        "image_quality_total": 1042,
+        "index_matched_objects": 1042,
+        "json_valid": 978,
+        "object_count_exact": 596,
+        "object_id_exact": 1042,
+        "object_id_set_exact": 596,
+        "object_id_total": 1042,
+        "plant_part_exact": 955,
+        "predicted_objects": 1170,
+        "reference_objects": 1747,
+        "samples": 1000,
+        "samples_with_extra_objects": 12,
+        "schema_valid": 974,
+        "severity_exact": 431,
+        "severity_total": 1042,
+        "stage_exact": 334,
+        "stage_total": 555,
+        "think_prefix_stripped": 1000
+      }
+    },
+    "pixtral_visual_reviewer": {
+      "metric_contract": "cv801_vlm_structured_v3_all_samples",
+      "label_source": "reviewed_gpt_caption_not_independent_reference",
+      "samples": 1000,
+      "json_valid_rate": 0.911,
+      "schema_valid_rate": 0.908,
+      "think_prefix_rate": 1.0,
+      "forbidden_box_output_rate": 0.0,
+      "crop_exact_rate": 0.789,
+      "plant_part_exact_rate": 0.896,
+      "object_count_exact_rate": 0.576,
+      "object_count_mae": 0.786,
+      "object_count_precision": 0.9781094527363184,
+      "object_count_recall": 0.5626788780767029,
+      "object_id_link_precision": 0.9761194029850746,
+      "object_id_link_recall": 0.5615340583858043,
+      "object_id_link_f1": 0.7129360465116279,
+      "object_id_set_exact_rate": 0.576,
+      "duplicate_object_id_rate": 0.0009950248756218905,
+      "extra_object_hallucination_proxy_rate": 0.021890547263681594,
+      "samples_with_extra_object_rate": 0.014,
+      "caption_token_f1": 0.5114410431007286,
+      "caption_bleu4_corpus": 0.15750560482208084,
+      "caption_rouge_l_f1": 0.42012152951355686,
+      "action_token_f1": 0.4009027322742871,
+      "confidence_mae": 0.13497456765005086,
+      "categorical_exact": {
+        "object_id": 0.9979654120040692,
+        "image_quality": 0.5666327568667345,
+        "stage": 0.611969111969112,
+        "disease": 0.44252288911495424,
+        "severity": 0.427263479145473
+      },
+      "metric_notes": {
+        "caption_matching": "unique object_id matches only",
+        "caption_bleu4_corpus": "lowercase alphanumeric tokens; single reference; unsmoothed corpus BLEU-4",
+        "caption_rouge_l_f1": "mean object-level ROUGE-L F1 over unique object_id matches",
+        "extra_object_hallucination_proxy_rate": "surplus predicted objects divided by all predicted objects; this is not a visual claim-level hallucination score",
+        "object_id_link_metrics": "reference-ID association only; visual linkage correctness requires an independent image evaluator"
+      },
+      "counts": {
+        "crop_exact": 789,
+        "disease_exact": 435,
+        "disease_total": 983,
+        "duplicate_predicted_object_ids": 1,
+        "extra_predicted_objects": 22,
+        "id_matched_objects": 981,
+        "image_quality_exact": 557,
+        "image_quality_total": 983,
+        "index_matched_objects": 983,
+        "json_valid": 911,
+        "object_count_exact": 576,
+        "object_id_exact": 981,
+        "object_id_set_exact": 576,
+        "object_id_total": 983,
+        "plant_part_exact": 896,
+        "predicted_objects": 1005,
+        "reference_objects": 1747,
+        "samples": 1000,
+        "samples_with_extra_objects": 14,
+        "schema_valid": 908,
+        "severity_exact": 420,
+        "severity_total": 983,
+        "stage_exact": 317,
+        "stage_total": 518,
+        "think_prefix_stripped": 1000
+      }
+    }
+  },
+  "independent": {
+    "t0": {
+      "protocol": "cv801_independent_visual_rubric_v1",
+      "samples": 1000,
+      "valid": 1000,
+      "valid_rate": 1.0,
+      "mean_scores": {
+        "visual_evidence": 1.285,
+        "conclusion_support": 0.56,
+        "confidence_appropriateness": 0.805,
+        "total": 2.65
+      },
+      "object_linkage": {
+        "correct": 637,
+        "incorrect": 217,
+        "uncertain": 151
+      },
+      "supported_claims": 1349,
+      "unsupported_claims": 2194,
+      "invalid_lines": []
+    },
+    "t1": {
+      "protocol": "cv801_independent_visual_rubric_v1",
+      "samples": 1000,
+      "valid": 1000,
+      "valid_rate": 1.0,
+      "mean_scores": {
+        "visual_evidence": 1.623,
+        "conclusion_support": 1.275,
+        "confidence_appropriateness": 1.274,
+        "total": 4.172
+      },
+      "object_linkage": {
+        "correct": 1029,
+        "incorrect": 54,
+        "uncertain": 37
+      },
+      "supported_claims": 2845,
+      "unsupported_claims": 1232,
+      "invalid_lines": []
+    },
+    "t2": {
+      "protocol": "cv801_independent_visual_rubric_v1",
+      "samples": 1000,
+      "valid": 1000,
+      "valid_rate": 1.0,
+      "mean_scores": {
+        "visual_evidence": 1.512,
+        "conclusion_support": 1.353,
+        "confidence_appropriateness": 1.31,
+        "total": 4.175
+      },
+      "object_linkage": {
+        "correct": 1142,
+        "incorrect": 104,
+        "uncertain": 137
+      },
+      "supported_claims": 3266,
+      "unsupported_claims": 1621,
+      "invalid_lines": []
+    },
+    "qwen35_27b": {
+      "protocol": "cv801_independent_visual_rubric_v1",
+      "samples": 1000,
+      "valid": 1000,
+      "valid_rate": 1.0,
+      "mean_scores": {
+        "visual_evidence": 1.116,
+        "conclusion_support": 0.73,
+        "confidence_appropriateness": 0.982,
+        "total": 2.828
+      },
+      "object_linkage": {
+        "correct": 506,
+        "incorrect": 341,
+        "uncertain": 161
+      },
+      "supported_claims": 1528,
+      "unsupported_claims": 1994,
+      "invalid_lines": []
+    },
+    "rd": {
+      "protocol": "cv801_independent_visual_rubric_v1",
+      "samples": 1000,
+      "valid": 1000,
+      "valid_rate": 1.0,
+      "mean_scores": {
+        "visual_evidence": 1.508,
+        "conclusion_support": 1.376,
+        "confidence_appropriateness": 1.334,
+        "total": 4.218
+      },
+      "object_linkage": {
+        "correct": 928,
+        "incorrect": 51,
+        "uncertain": 46
+      },
+      "supported_claims": 2324,
+      "unsupported_claims": 1262,
+      "invalid_lines": []
+    },
+    "rc": {
+      "protocol": "cv801_independent_visual_rubric_v1",
+      "samples": 1000,
+      "valid": 1000,
+      "valid_rate": 1.0,
+      "mean_scores": {
+        "visual_evidence": 1.531,
+        "conclusion_support": 1.368,
+        "confidence_appropriateness": 1.343,
+        "total": 4.242
+      },
+      "object_linkage": {
+        "correct": 927,
+        "incorrect": 49,
+        "uncertain": 43
+      },
+      "supported_claims": 2330,
+      "unsupported_claims": 1257,
+      "invalid_lines": []
+    },
+    "rc_rd": {
+      "protocol": "cv801_independent_visual_rubric_v1",
+      "samples": 1000,
+      "valid": 1000,
+      "valid_rate": 1.0,
+      "mean_scores": {
+        "visual_evidence": 1.488,
+        "conclusion_support": 1.373,
+        "confidence_appropriateness": 1.278,
+        "total": 4.139
+      },
+      "object_linkage": {
+        "correct": 927,
+        "incorrect": 43,
+        "uncertain": 45
+      },
+      "supported_claims": 2221,
+      "unsupported_claims": 1254,
+      "invalid_lines": []
+    },
+    "full_round1": {
+      "protocol": "cv801_independent_visual_rubric_v1",
+      "samples": 1000,
+      "valid": 1000,
+      "valid_rate": 1.0,
+      "mean_scores": {
+        "visual_evidence": 1.581,
+        "conclusion_support": 1.352,
+        "confidence_appropriateness": 1.355,
+        "total": 4.288
+      },
+      "object_linkage": {
+        "correct": 947,
+        "incorrect": 50,
+        "uncertain": 58
+      },
+      "supported_claims": 2489,
+      "unsupported_claims": 1305,
+      "invalid_lines": []
+    },
+    "full_round2": {
+      "protocol": "cv801_independent_visual_rubric_v1",
+      "samples": 1000,
+      "valid": 1000,
+      "valid_rate": 1.0,
+      "mean_scores": {
+        "visual_evidence": 1.559,
+        "conclusion_support": 1.387,
+        "confidence_appropriateness": 1.322,
+        "total": 4.268
+      },
+      "object_linkage": {
+        "correct": 940,
+        "incorrect": 58,
+        "uncertain": 27
+      },
+      "supported_claims": 2370,
+      "unsupported_claims": 1278,
+      "invalid_lines": []
+    }
+  },
+  "review": {
+    "rc": {
+      "kind": "reviewer",
+      "samples": 1000,
+      "json_valid": 1000,
+      "json_valid_rate": 1.0,
+      "schema_valid": 1000,
+      "schema_valid_rate": 1.0,
+      "decisions": {
+        "pass": 24,
+        "revise": 976
+      },
+      "invalid_lines": []
+    },
+    "rd": {
+      "kind": "reviewer",
+      "samples": 1000,
+      "json_valid": 1000,
+      "json_valid_rate": 1.0,
+      "schema_valid": 1000,
+      "schema_valid_rate": 1.0,
+      "decisions": {
+        "pass": 235,
+        "revise": 765
+      },
+      "invalid_lines": []
+    },
+    "judge": {
+      "kind": "judge",
+      "samples": 1000,
+      "json_valid": 1000,
+      "json_valid_rate": 1.0,
+      "schema_valid": 1000,
+      "schema_valid_rate": 1.0,
+      "decisions": {
+        "accept": 27,
+        "revise": 973
+      },
+      "invalid_lines": []
+    },
+    "recheck_round1": {
+      "kind": "recheck",
+      "samples": 1000,
+      "json_valid": 1000,
+      "json_valid_rate": 1.0,
+      "schema_valid": 1000,
+      "schema_valid_rate": 1.0,
+      "decisions": {
+        "accept": 29,
+        "revise_again": 971
+      },
+      "invalid_lines": []
+    },
+    "recheck_round2": {
+      "kind": "recheck",
+      "samples": 1000,
+      "json_valid": 1000,
+      "json_valid_rate": 1.0,
+      "schema_valid": 1000,
+      "schema_valid_rate": 1.0,
+      "decisions": {
+        "accept": 31,
+        "revise_again": 969
+      },
+      "invalid_lines": []
+    },
+    "pixtral_rc": {
+      "kind": "reviewer",
+      "samples": 1000,
+      "json_valid": 1000,
+      "json_valid_rate": 1.0,
+      "schema_valid": 1000,
+      "schema_valid_rate": 1.0,
+      "decisions": {
+        "revise": 1000
+      },
+      "invalid_lines": []
+    },
+    "pixtral_judge": {
+      "kind": "judge",
+      "samples": 1000,
+      "json_valid": 1000,
+      "json_valid_rate": 1.0,
+      "schema_valid": 1000,
+      "schema_valid_rate": 1.0,
+      "decisions": {
+        "accept": 2,
+        "revise": 998
+      },
+      "invalid_lines": []
+    },
+    "pixtral_recheck": {
+      "kind": "recheck",
+      "samples": 1000,
+      "json_valid": 1000,
+      "json_valid_rate": 1.0,
+      "schema_valid": 1000,
+      "schema_valid_rate": 1.0,
+      "decisions": {
+        "accept": 3,
+        "revise_again": 997
+      },
+      "invalid_lines": []
+    }
+  },
+  "efficiency": {
+    "protocol": "cv801_slurm_efficiency_v1",
+    "generated_at_utc": "2026-11-13T13:43:52.848141+00:00",
+    "accounting_note": "GPU-hours sum elapsed allocation time; execution span is max(end)-min(start) for each logical system and excludes queue wait. Shared stages are charged to each system that requires them. Jobs listed as accepted post-inference failures produced complete outputs that passed a corrected independent audit.",
+    "systems": {
+      "yolo26x": {
+        "job_ids": [
+          "403534"
+        ],
+        "job_count": 1,
+        "images": 1000,
+        "gpu_seconds": 536,
+        "gpu_hours": 0.14888888888888888,
+        "gpu_hours_per_image": 0.0001488888888888889,
+        "execution_span_seconds": 67.0,
+        "execution_span_seconds_per_image": 0.067,
+        "post_inference_audit_failures_accepted": [],
+        "jobs": [
+          {
+            "job_id": "403534",
+            "state": "COMPLETED",
+            "elapsed_seconds": 67,
+            "start": "2026-11-11T21:28:50",
+            "end": "2026-11-11T21:29:57",
+            "requested_gpus": 8
+          }
+        ]
+      },
+      "grounding_dino": {
+        "job_ids": [
+          "403535"
+        ],
+        "job_count": 1,
+        "images": 1000,
+        "gpu_seconds": 3008,
+        "gpu_hours": 0.8355555555555556,
+        "gpu_hours_per_image": 0.0008355555555555556,
+        "execution_span_seconds": 376.0,
+        "execution_span_seconds_per_image": 0.376,
+        "post_inference_audit_failures_accepted": [],
+        "jobs": [
+          {
+            "job_id": "403535",
+            "state": "COMPLETED",
+            "elapsed_seconds": 376,
+            "start": "2026-11-11T21:30:08",
+            "end": "2026-11-11T21:36:24",
+            "requested_gpus": 8
+          }
+        ]
+      },
+      "locateanything": {
+        "job_ids": [
+          "403536"
+        ],
+        "job_count": 1,
+        "images": 1000,
+        "gpu_seconds": 3152,
+        "gpu_hours": 0.8755555555555555,
+        "gpu_hours_per_image": 0.0008755555555555555,
+        "execution_span_seconds": 394.0,
+        "execution_span_seconds_per_image": 0.394,
+        "post_inference_audit_failures_accepted": [],
+        "jobs": [
+          {
+            "job_id": "403536",
+            "state": "COMPLETED",
+            "elapsed_seconds": 394,
+            "start": "2026-11-11T21:35:41",
+            "end": "2026-11-11T21:42:15",
+            "requested_gpus": 8
+          }
+        ]
+      },
+      "t0": {
+        "job_ids": [
+          "403229"
+        ],
+        "job_count": 1,
+        "images": 1000,
+        "gpu_seconds": 30664,
+        "gpu_hours": 8.517777777777777,
+        "gpu_hours_per_image": 0.008517777777777777,
+        "execution_span_seconds": 3833.0,
+        "execution_span_seconds_per_image": 3.833,
+        "post_inference_audit_failures_accepted": [
+          "403229"
+        ],
+        "jobs": [
+          {
+            "job_id": "403229",
+            "state": "FAILED",
+            "elapsed_seconds": 3833,
+            "start": "2026-11-11T20:24:47",
+            "end": "2026-11-11T21:28:40",
+            "requested_gpus": 8
+          }
+        ]
+      },
+      "t1": {
+        "job_ids": [
+          "403230"
+        ],
+        "job_count": 1,
+        "images": 1000,
+        "gpu_seconds": 145440,
+        "gpu_hours": 40.4,
+        "gpu_hours_per_image": 0.0404,
+        "execution_span_seconds": 18180.0,
+        "execution_span_seconds_per_image": 18.18,
+        "post_inference_audit_failures_accepted": [
+          "403230"
+        ],
+        "jobs": [
+          {
+            "job_id": "403230",
+            "state": "FAILED",
+            "elapsed_seconds": 18180,
+            "start": "2026-11-11T20:31:15",
+            "end": "2026-11-12T01:34:15",
+            "requested_gpus": 8
+          }
+        ]
+      },
+      "t2": {
+        "job_ids": [
+          "403534",
+          "403231",
+          "403232"
+        ],
+        "job_count": 3,
+        "images": 1000,
+        "gpu_seconds": 32914,
+        "gpu_hours": 9.142777777777777,
+        "gpu_hours_per_image": 0.009142777777777777,
+        "execution_span_seconds": 4511.0,
+        "execution_span_seconds_per_image": 4.511,
+        "post_inference_audit_failures_accepted": [
+          "403232"
+        ],
+        "jobs": [
+          {
+            "job_id": "403534",
+            "state": "COMPLETED",
+            "elapsed_seconds": 67,
+            "start": "2026-11-11T21:28:50",
+            "end": "2026-11-11T21:29:57",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403231",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-11T21:30:38",
+            "end": "2026-11-11T21:30:40",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403232",
+            "state": "FAILED",
+            "elapsed_seconds": 4047,
+            "start": "2026-11-11T21:36:34",
+            "end": "2026-11-11T22:44:01",
+            "requested_gpus": 8
+          }
+        ]
+      },
+      "qwen35_27b": {
+        "job_ids": [
+          "403316"
+        ],
+        "job_count": 1,
+        "images": 1000,
+        "gpu_seconds": 60672,
+        "gpu_hours": 16.85333333333333,
+        "gpu_hours_per_image": 0.01685333333333333,
+        "execution_span_seconds": 7584.0,
+        "execution_span_seconds_per_image": 7.584,
+        "post_inference_audit_failures_accepted": [
+          "403316"
+        ],
+        "jobs": [
+          {
+            "job_id": "403316",
+            "state": "FAILED",
+            "elapsed_seconds": 7584,
+            "start": "2026-11-11T21:22:44",
+            "end": "2026-11-11T23:29:08",
+            "requested_gpus": 8
+          }
+        ]
+      },
+      "rc": {
+        "job_ids": [
+          "403534",
+          "403231",
+          "403232",
+          "403233",
+          "403234",
+          "403236",
+          "403238",
+          "403240",
+          "403242",
+          "406018",
+          "406020",
+          "406299",
+          "406300",
+          "403317",
+          "403318"
+        ],
+        "job_count": 15,
+        "images": 1000,
+        "gpu_seconds": 57834,
+        "gpu_hours": 16.065,
+        "gpu_hours_per_image": 0.016065000000000003,
+        "execution_span_seconds": 53441.0,
+        "execution_span_seconds_per_image": 53.441,
+        "post_inference_audit_failures_accepted": [
+          "403232",
+          "403242",
+          "406020"
+        ],
+        "jobs": [
+          {
+            "job_id": "403534",
+            "state": "COMPLETED",
+            "elapsed_seconds": 67,
+            "start": "2026-11-11T21:28:50",
+            "end": "2026-11-11T21:29:57",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403231",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-11T21:30:38",
+            "end": "2026-11-11T21:30:40",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403232",
+            "state": "FAILED",
+            "elapsed_seconds": 4047,
+            "start": "2026-11-11T21:36:34",
+            "end": "2026-11-11T22:44:01",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403233",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T06:37:48",
+            "end": "2026-11-12T06:37:50",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403234",
+            "state": "COMPLETED",
+            "elapsed_seconds": 4644,
+            "start": "2026-11-12T06:38:00",
+            "end": "2026-11-12T07:55:24",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403236",
+            "state": "COMPLETED",
+            "elapsed_seconds": 3237,
+            "start": "2026-11-12T06:38:27",
+            "end": "2026-11-12T07:32:24",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403238",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2237,
+            "start": "2026-11-12T06:38:27",
+            "end": "2026-11-12T07:15:44",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403240",
+            "state": "COMPLETED",
+            "elapsed_seconds": 3067,
+            "start": "2026-11-12T06:38:58",
+            "end": "2026-11-12T07:30:05",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403242",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T07:56:21",
+            "end": "2026-11-12T07:56:23",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406018",
+            "state": "COMPLETED",
+            "elapsed_seconds": 967,
+            "start": "2026-11-12T08:35:28",
+            "end": "2026-11-12T08:51:35",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406020",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T08:52:11",
+            "end": "2026-11-12T08:52:13",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406299",
+            "state": "COMPLETED",
+            "elapsed_seconds": 244,
+            "start": "2026-11-12T09:18:35",
+            "end": "2026-11-12T09:22:39",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406300",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T09:23:15",
+            "end": "2026-11-12T09:23:17",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403317",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T09:23:46",
+            "end": "2026-11-12T09:23:48",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403318",
+            "state": "COMPLETED",
+            "elapsed_seconds": 10514,
+            "start": "2026-11-12T09:24:17",
+            "end": "2026-11-12T12:19:31",
+            "requested_gpus": 1
+          }
+        ]
+      },
+      "rd": {
+        "job_ids": [
+          "403534",
+          "403231",
+          "403232",
+          "403233",
+          "403235",
+          "405518",
+          "403239",
+          "403241",
+          "403243",
+          "407033",
+          "407034",
+          "407121",
+          "407036",
+          "407037",
+          "407038",
+          "403246",
+          "403247"
+        ],
+        "job_count": 17,
+        "images": 1000,
+        "gpu_seconds": 121526,
+        "gpu_hours": 33.757222222222225,
+        "gpu_hours_per_image": 0.03375722222222222,
+        "execution_span_seconds": 72250.0,
+        "execution_span_seconds_per_image": 72.25,
+        "post_inference_audit_failures_accepted": [
+          "403232",
+          "403243"
+        ],
+        "jobs": [
+          {
+            "job_id": "403534",
+            "state": "COMPLETED",
+            "elapsed_seconds": 67,
+            "start": "2026-11-11T21:28:50",
+            "end": "2026-11-11T21:29:57",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403231",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-11T21:30:38",
+            "end": "2026-11-11T21:30:40",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403232",
+            "state": "FAILED",
+            "elapsed_seconds": 4047,
+            "start": "2026-11-11T21:36:34",
+            "end": "2026-11-11T22:44:01",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403233",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T06:37:48",
+            "end": "2026-11-12T06:37:50",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403235",
+            "state": "COMPLETED",
+            "elapsed_seconds": 9639,
+            "start": "2026-11-12T06:42:08",
+            "end": "2026-11-12T09:22:47",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "405518",
+            "state": "COMPLETED",
+            "elapsed_seconds": 10005,
+            "start": "2026-11-12T07:08:35",
+            "end": "2026-11-12T09:55:20",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403239",
+            "state": "COMPLETED",
+            "elapsed_seconds": 7491,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T08:47:49",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403241",
+            "state": "COMPLETED",
+            "elapsed_seconds": 9464,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T09:20:42",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403243",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T09:55:43",
+            "end": "2026-11-12T09:55:45",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "407033",
+            "state": "COMPLETED",
+            "elapsed_seconds": 750,
+            "start": "2026-11-12T10:49:51",
+            "end": "2026-11-12T11:02:21",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407034",
+            "state": "COMPLETED",
+            "elapsed_seconds": 633,
+            "start": "2026-11-12T10:50:22",
+            "end": "2026-11-12T11:00:55",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407121",
+            "state": "COMPLETED",
+            "elapsed_seconds": 516,
+            "start": "2026-11-12T11:02:25",
+            "end": "2026-11-12T11:11:01",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407036",
+            "state": "COMPLETED",
+            "elapsed_seconds": 522,
+            "start": "2026-11-12T10:50:22",
+            "end": "2026-11-12T10:59:04",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407037",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T11:11:15",
+            "end": "2026-11-12T11:11:17",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "407038",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T11:11:47",
+            "end": "2026-11-12T11:11:48",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403246",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T14:36:25",
+            "end": "2026-11-12T14:36:27",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403247",
+            "state": "COMPLETED",
+            "elapsed_seconds": 10563,
+            "start": "2026-11-12T14:36:57",
+            "end": "2026-11-12T17:33:00",
+            "requested_gpus": 1
+          }
+        ]
+      },
+      "rc_rd": {
+        "job_ids": [
+          "403534",
+          "403231",
+          "403232",
+          "403233",
+          "403234",
+          "403235",
+          "403236",
+          "405518",
+          "403238",
+          "403239",
+          "403240",
+          "403241",
+          "403242",
+          "406018",
+          "406020",
+          "406299",
+          "406300",
+          "403243",
+          "407033",
+          "407034",
+          "407121",
+          "407036",
+          "407037",
+          "407038",
+          "403319",
+          "403320"
+        ],
+        "job_count": 26,
+        "images": 1000,
+        "gpu_seconds": 135787,
+        "gpu_hours": 37.71861111111111,
+        "gpu_hours_per_image": 0.037718611111111106,
+        "execution_span_seconds": 59862.0,
+        "execution_span_seconds_per_image": 59.862,
+        "post_inference_audit_failures_accepted": [
+          "403232",
+          "403242",
+          "403243",
+          "406020"
+        ],
+        "jobs": [
+          {
+            "job_id": "403534",
+            "state": "COMPLETED",
+            "elapsed_seconds": 67,
+            "start": "2026-11-11T21:28:50",
+            "end": "2026-11-11T21:29:57",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403231",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-11T21:30:38",
+            "end": "2026-11-11T21:30:40",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403232",
+            "state": "FAILED",
+            "elapsed_seconds": 4047,
+            "start": "2026-11-11T21:36:34",
+            "end": "2026-11-11T22:44:01",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403233",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T06:37:48",
+            "end": "2026-11-12T06:37:50",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403234",
+            "state": "COMPLETED",
+            "elapsed_seconds": 4644,
+            "start": "2026-11-12T06:38:00",
+            "end": "2026-11-12T07:55:24",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403235",
+            "state": "COMPLETED",
+            "elapsed_seconds": 9639,
+            "start": "2026-11-12T06:42:08",
+            "end": "2026-11-12T09:22:47",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403236",
+            "state": "COMPLETED",
+            "elapsed_seconds": 3237,
+            "start": "2026-11-12T06:38:27",
+            "end": "2026-11-12T07:32:24",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "405518",
+            "state": "COMPLETED",
+            "elapsed_seconds": 10005,
+            "start": "2026-11-12T07:08:35",
+            "end": "2026-11-12T09:55:20",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403238",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2237,
+            "start": "2026-11-12T06:38:27",
+            "end": "2026-11-12T07:15:44",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403239",
+            "state": "COMPLETED",
+            "elapsed_seconds": 7491,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T08:47:49",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403240",
+            "state": "COMPLETED",
+            "elapsed_seconds": 3067,
+            "start": "2026-11-12T06:38:58",
+            "end": "2026-11-12T07:30:05",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403241",
+            "state": "COMPLETED",
+            "elapsed_seconds": 9464,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T09:20:42",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403242",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T07:56:21",
+            "end": "2026-11-12T07:56:23",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406018",
+            "state": "COMPLETED",
+            "elapsed_seconds": 967,
+            "start": "2026-11-12T08:35:28",
+            "end": "2026-11-12T08:51:35",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406020",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T08:52:11",
+            "end": "2026-11-12T08:52:13",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406299",
+            "state": "COMPLETED",
+            "elapsed_seconds": 244,
+            "start": "2026-11-12T09:18:35",
+            "end": "2026-11-12T09:22:39",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406300",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T09:23:15",
+            "end": "2026-11-12T09:23:17",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403243",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T09:55:43",
+            "end": "2026-11-12T09:55:45",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "407033",
+            "state": "COMPLETED",
+            "elapsed_seconds": 750,
+            "start": "2026-11-12T10:49:51",
+            "end": "2026-11-12T11:02:21",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407034",
+            "state": "COMPLETED",
+            "elapsed_seconds": 633,
+            "start": "2026-11-12T10:50:22",
+            "end": "2026-11-12T11:00:55",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407121",
+            "state": "COMPLETED",
+            "elapsed_seconds": 516,
+            "start": "2026-11-12T11:02:25",
+            "end": "2026-11-12T11:11:01",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407036",
+            "state": "COMPLETED",
+            "elapsed_seconds": 522,
+            "start": "2026-11-12T10:50:22",
+            "end": "2026-11-12T10:59:04",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407037",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T11:11:15",
+            "end": "2026-11-12T11:11:17",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "407038",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T11:11:47",
+            "end": "2026-11-12T11:11:48",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403319",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T11:12:18",
+            "end": "2026-11-12T11:12:19",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403320",
+            "state": "COMPLETED",
+            "elapsed_seconds": 10423,
+            "start": "2026-11-12T11:12:49",
+            "end": "2026-11-12T14:06:32",
+            "requested_gpus": 1
+          }
+        ]
+      },
+      "full_round1": {
+        "job_ids": [
+          "403534",
+          "403231",
+          "403232",
+          "403233",
+          "403234",
+          "403235",
+          "403236",
+          "405518",
+          "403238",
+          "403239",
+          "403240",
+          "403241",
+          "403242",
+          "406018",
+          "406020",
+          "406299",
+          "406300",
+          "403243",
+          "407033",
+          "407034",
+          "407121",
+          "407036",
+          "407037",
+          "407038",
+          "403244",
+          "403245",
+          "409129",
+          "409131",
+          "403321",
+          "409133",
+          "403322",
+          "403323",
+          "403324",
+          "416715",
+          "416720",
+          "403325",
+          "416721"
+        ],
+        "job_count": 37,
+        "images": 1000,
+        "gpu_seconds": 161997,
+        "gpu_hours": 44.99916666666667,
+        "gpu_hours_per_image": 0.044999166666666666,
+        "execution_span_seconds": 119715.0,
+        "execution_span_seconds_per_image": 119.715,
+        "post_inference_audit_failures_accepted": [
+          "403232",
+          "403242",
+          "403243",
+          "403321",
+          "403325",
+          "406020"
+        ],
+        "jobs": [
+          {
+            "job_id": "403534",
+            "state": "COMPLETED",
+            "elapsed_seconds": 67,
+            "start": "2026-11-11T21:28:50",
+            "end": "2026-11-11T21:29:57",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403231",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-11T21:30:38",
+            "end": "2026-11-11T21:30:40",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403232",
+            "state": "FAILED",
+            "elapsed_seconds": 4047,
+            "start": "2026-11-11T21:36:34",
+            "end": "2026-11-11T22:44:01",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403233",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T06:37:48",
+            "end": "2026-11-12T06:37:50",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403234",
+            "state": "COMPLETED",
+            "elapsed_seconds": 4644,
+            "start": "2026-11-12T06:38:00",
+            "end": "2026-11-12T07:55:24",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403235",
+            "state": "COMPLETED",
+            "elapsed_seconds": 9639,
+            "start": "2026-11-12T06:42:08",
+            "end": "2026-11-12T09:22:47",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403236",
+            "state": "COMPLETED",
+            "elapsed_seconds": 3237,
+            "start": "2026-11-12T06:38:27",
+            "end": "2026-11-12T07:32:24",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "405518",
+            "state": "COMPLETED",
+            "elapsed_seconds": 10005,
+            "start": "2026-11-12T07:08:35",
+            "end": "2026-11-12T09:55:20",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403238",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2237,
+            "start": "2026-11-12T06:38:27",
+            "end": "2026-11-12T07:15:44",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403239",
+            "state": "COMPLETED",
+            "elapsed_seconds": 7491,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T08:47:49",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403240",
+            "state": "COMPLETED",
+            "elapsed_seconds": 3067,
+            "start": "2026-11-12T06:38:58",
+            "end": "2026-11-12T07:30:05",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403241",
+            "state": "COMPLETED",
+            "elapsed_seconds": 9464,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T09:20:42",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403242",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T07:56:21",
+            "end": "2026-11-12T07:56:23",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406018",
+            "state": "COMPLETED",
+            "elapsed_seconds": 967,
+            "start": "2026-11-12T08:35:28",
+            "end": "2026-11-12T08:51:35",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406020",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T08:52:11",
+            "end": "2026-11-12T08:52:13",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406299",
+            "state": "COMPLETED",
+            "elapsed_seconds": 244,
+            "start": "2026-11-12T09:18:35",
+            "end": "2026-11-12T09:22:39",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406300",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T09:23:15",
+            "end": "2026-11-12T09:23:17",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403243",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T09:55:43",
+            "end": "2026-11-12T09:55:45",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "407033",
+            "state": "COMPLETED",
+            "elapsed_seconds": 750,
+            "start": "2026-11-12T10:49:51",
+            "end": "2026-11-12T11:02:21",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407034",
+            "state": "COMPLETED",
+            "elapsed_seconds": 633,
+            "start": "2026-11-12T10:50:22",
+            "end": "2026-11-12T11:00:55",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407121",
+            "state": "COMPLETED",
+            "elapsed_seconds": 516,
+            "start": "2026-11-12T11:02:25",
+            "end": "2026-11-12T11:11:01",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407036",
+            "state": "COMPLETED",
+            "elapsed_seconds": 522,
+            "start": "2026-11-12T10:50:22",
+            "end": "2026-11-12T10:59:04",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407037",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T11:11:15",
+            "end": "2026-11-12T11:11:17",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "407038",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T11:11:47",
+            "end": "2026-11-12T11:11:48",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403244",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T11:12:18",
+            "end": "2026-11-12T11:12:19",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403245",
+            "state": "COMPLETED",
+            "elapsed_seconds": 12192,
+            "start": "2026-11-12T11:12:49",
+            "end": "2026-11-12T14:36:01",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "409129",
+            "state": "COMPLETED",
+            "elapsed_seconds": 120,
+            "start": "2026-11-12T14:45:59",
+            "end": "2026-11-12T14:47:59",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "409131",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T14:48:09",
+            "end": "2026-11-12T14:48:11",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403321",
+            "state": "FAILED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T14:36:57",
+            "end": "2026-11-12T14:36:58",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "409133",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T14:48:21",
+            "end": "2026-11-12T14:48:23",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403322",
+            "state": "COMPLETED",
+            "elapsed_seconds": 10820,
+            "start": "2026-11-12T14:48:33",
+            "end": "2026-11-12T17:48:53",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403323",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T17:50:14",
+            "end": "2026-11-12T17:50:16",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403324",
+            "state": "COMPLETED",
+            "elapsed_seconds": 13303,
+            "start": "2026-11-12T17:50:26",
+            "end": "2026-11-12T21:32:09",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "416715",
+            "state": "COMPLETED",
+            "elapsed_seconds": 185,
+            "start": "2026-11-13T06:39:22",
+            "end": "2026-11-13T06:42:27",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "416720",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-13T06:43:32",
+            "end": "2026-11-13T06:43:34",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403325",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T21:32:30",
+            "end": "2026-11-12T21:32:32",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "416721",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-13T06:44:03",
+            "end": "2026-11-13T06:44:05",
+            "requested_gpus": 1
+          }
+        ]
+      },
+      "full_round2": {
+        "job_ids": [
+          "403534",
+          "403231",
+          "403232",
+          "403233",
+          "403234",
+          "403235",
+          "403236",
+          "405518",
+          "403238",
+          "403239",
+          "403240",
+          "403241",
+          "403242",
+          "406018",
+          "406020",
+          "406299",
+          "406300",
+          "403243",
+          "407033",
+          "407034",
+          "407121",
+          "407036",
+          "407037",
+          "407038",
+          "403244",
+          "403245",
+          "409129",
+          "409131",
+          "403321",
+          "409133",
+          "403322",
+          "403323",
+          "403324",
+          "416715",
+          "416720",
+          "403325",
+          "416721",
+          "416722",
+          "403332",
+          "403333",
+          "403334",
+          "403335",
+          "421096",
+          "421097",
+          "421338",
+          "421339",
+          "421340"
+        ],
+        "job_count": 47,
+        "images": 1000,
+        "gpu_seconds": 185484,
+        "gpu_hours": 51.52333333333333,
+        "gpu_hours_per_image": 0.05152333333333333,
+        "execution_span_seconds": 144308.0,
+        "execution_span_seconds_per_image": 144.308,
+        "post_inference_audit_failures_accepted": [
+          "403232",
+          "403242",
+          "403243",
+          "403321",
+          "403325",
+          "403335",
+          "406020",
+          "421097"
+        ],
+        "jobs": [
+          {
+            "job_id": "403534",
+            "state": "COMPLETED",
+            "elapsed_seconds": 67,
+            "start": "2026-11-11T21:28:50",
+            "end": "2026-11-11T21:29:57",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403231",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-11T21:30:38",
+            "end": "2026-11-11T21:30:40",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403232",
+            "state": "FAILED",
+            "elapsed_seconds": 4047,
+            "start": "2026-11-11T21:36:34",
+            "end": "2026-11-11T22:44:01",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403233",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T06:37:48",
+            "end": "2026-11-12T06:37:50",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403234",
+            "state": "COMPLETED",
+            "elapsed_seconds": 4644,
+            "start": "2026-11-12T06:38:00",
+            "end": "2026-11-12T07:55:24",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403235",
+            "state": "COMPLETED",
+            "elapsed_seconds": 9639,
+            "start": "2026-11-12T06:42:08",
+            "end": "2026-11-12T09:22:47",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403236",
+            "state": "COMPLETED",
+            "elapsed_seconds": 3237,
+            "start": "2026-11-12T06:38:27",
+            "end": "2026-11-12T07:32:24",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "405518",
+            "state": "COMPLETED",
+            "elapsed_seconds": 10005,
+            "start": "2026-11-12T07:08:35",
+            "end": "2026-11-12T09:55:20",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403238",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2237,
+            "start": "2026-11-12T06:38:27",
+            "end": "2026-11-12T07:15:44",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403239",
+            "state": "COMPLETED",
+            "elapsed_seconds": 7491,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T08:47:49",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403240",
+            "state": "COMPLETED",
+            "elapsed_seconds": 3067,
+            "start": "2026-11-12T06:38:58",
+            "end": "2026-11-12T07:30:05",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403241",
+            "state": "COMPLETED",
+            "elapsed_seconds": 9464,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T09:20:42",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403242",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T07:56:21",
+            "end": "2026-11-12T07:56:23",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406018",
+            "state": "COMPLETED",
+            "elapsed_seconds": 967,
+            "start": "2026-11-12T08:35:28",
+            "end": "2026-11-12T08:51:35",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406020",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T08:52:11",
+            "end": "2026-11-12T08:52:13",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406299",
+            "state": "COMPLETED",
+            "elapsed_seconds": 244,
+            "start": "2026-11-12T09:18:35",
+            "end": "2026-11-12T09:22:39",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406300",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T09:23:15",
+            "end": "2026-11-12T09:23:17",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403243",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T09:55:43",
+            "end": "2026-11-12T09:55:45",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "407033",
+            "state": "COMPLETED",
+            "elapsed_seconds": 750,
+            "start": "2026-11-12T10:49:51",
+            "end": "2026-11-12T11:02:21",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407034",
+            "state": "COMPLETED",
+            "elapsed_seconds": 633,
+            "start": "2026-11-12T10:50:22",
+            "end": "2026-11-12T11:00:55",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407121",
+            "state": "COMPLETED",
+            "elapsed_seconds": 516,
+            "start": "2026-11-12T11:02:25",
+            "end": "2026-11-12T11:11:01",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407036",
+            "state": "COMPLETED",
+            "elapsed_seconds": 522,
+            "start": "2026-11-12T10:50:22",
+            "end": "2026-11-12T10:59:04",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407037",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T11:11:15",
+            "end": "2026-11-12T11:11:17",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "407038",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T11:11:47",
+            "end": "2026-11-12T11:11:48",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403244",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T11:12:18",
+            "end": "2026-11-12T11:12:19",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403245",
+            "state": "COMPLETED",
+            "elapsed_seconds": 12192,
+            "start": "2026-11-12T11:12:49",
+            "end": "2026-11-12T14:36:01",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "409129",
+            "state": "COMPLETED",
+            "elapsed_seconds": 120,
+            "start": "2026-11-12T14:45:59",
+            "end": "2026-11-12T14:47:59",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "409131",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T14:48:09",
+            "end": "2026-11-12T14:48:11",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403321",
+            "state": "FAILED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T14:36:57",
+            "end": "2026-11-12T14:36:58",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "409133",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T14:48:21",
+            "end": "2026-11-12T14:48:23",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403322",
+            "state": "COMPLETED",
+            "elapsed_seconds": 10820,
+            "start": "2026-11-12T14:48:33",
+            "end": "2026-11-12T17:48:53",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403323",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T17:50:14",
+            "end": "2026-11-12T17:50:16",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403324",
+            "state": "COMPLETED",
+            "elapsed_seconds": 13303,
+            "start": "2026-11-12T17:50:26",
+            "end": "2026-11-12T21:32:09",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "416715",
+            "state": "COMPLETED",
+            "elapsed_seconds": 185,
+            "start": "2026-11-13T06:39:22",
+            "end": "2026-11-13T06:42:27",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "416720",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-13T06:43:32",
+            "end": "2026-11-13T06:43:34",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403325",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T21:32:30",
+            "end": "2026-11-12T21:32:32",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "416721",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-13T06:44:03",
+            "end": "2026-11-13T06:44:05",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "416722",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-13T06:44:03",
+            "end": "2026-11-13T06:44:05",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403332",
+            "state": "COMPLETED",
+            "elapsed_seconds": 10986,
+            "start": "2026-11-13T06:47:11",
+            "end": "2026-11-13T09:50:17",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403333",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-13T09:51:04",
+            "end": "2026-11-13T09:51:05",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403334",
+            "state": "COMPLETED",
+            "elapsed_seconds": 11739,
+            "start": "2026-11-13T09:51:16",
+            "end": "2026-11-13T13:06:55",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403335",
+            "state": "FAILED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-13T13:07:06",
+            "end": "2026-11-13T13:07:07",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "421096",
+            "state": "COMPLETED",
+            "elapsed_seconds": 661,
+            "start": "2026-11-13T13:13:46",
+            "end": "2026-11-13T13:24:47",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "421097",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-13T13:24:57",
+            "end": "2026-11-13T13:24:59",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "421338",
+            "state": "COMPLETED",
+            "elapsed_seconds": 92,
+            "start": "2026-11-13T13:31:22",
+            "end": "2026-11-13T13:32:54",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "421339",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-13T13:33:26",
+            "end": "2026-11-13T13:33:28",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "421340",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-13T13:33:57",
+            "end": "2026-11-13T13:33:58",
+            "requested_gpus": 1
+          }
+        ]
+      },
+      "pixtral_visual_reviewer": {
+        "job_ids": [
+          "403534",
+          "403231",
+          "403232",
+          "403233",
+          "403235",
+          "405518",
+          "403239",
+          "403241",
+          "403243",
+          "407033",
+          "407034",
+          "407121",
+          "407036",
+          "407037",
+          "407038",
+          "403382",
+          "403383",
+          "403384",
+          "403385",
+          "403386",
+          "406019",
+          "406021",
+          "403387",
+          "403388",
+          "409130",
+          "409132",
+          "403389",
+          "409134",
+          "403390",
+          "403391",
+          "403392",
+          "416716",
+          "416719",
+          "403393",
+          "416723"
+        ],
+        "job_count": 35,
+        "images": 1000,
+        "gpu_seconds": 165883,
+        "gpu_hours": 46.07861111111111,
+        "gpu_hours_per_image": 0.046078611111111105,
+        "execution_span_seconds": 119778.0,
+        "execution_span_seconds_per_image": 119.778,
+        "post_inference_audit_failures_accepted": [
+          "403232",
+          "403243",
+          "403386",
+          "403389",
+          "403393"
+        ],
+        "jobs": [
+          {
+            "job_id": "403534",
+            "state": "COMPLETED",
+            "elapsed_seconds": 67,
+            "start": "2026-11-11T21:28:50",
+            "end": "2026-11-11T21:29:57",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403231",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-11T21:30:38",
+            "end": "2026-11-11T21:30:40",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403232",
+            "state": "FAILED",
+            "elapsed_seconds": 4047,
+            "start": "2026-11-11T21:36:34",
+            "end": "2026-11-11T22:44:01",
+            "requested_gpus": 8
+          },
+          {
+            "job_id": "403233",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T06:37:48",
+            "end": "2026-11-12T06:37:50",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403235",
+            "state": "COMPLETED",
+            "elapsed_seconds": 9639,
+            "start": "2026-11-12T06:42:08",
+            "end": "2026-11-12T09:22:47",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "405518",
+            "state": "COMPLETED",
+            "elapsed_seconds": 10005,
+            "start": "2026-11-12T07:08:35",
+            "end": "2026-11-12T09:55:20",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403239",
+            "state": "COMPLETED",
+            "elapsed_seconds": 7491,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T08:47:49",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403241",
+            "state": "COMPLETED",
+            "elapsed_seconds": 9464,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T09:20:42",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "403243",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T09:55:43",
+            "end": "2026-11-12T09:55:45",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "407033",
+            "state": "COMPLETED",
+            "elapsed_seconds": 750,
+            "start": "2026-11-12T10:49:51",
+            "end": "2026-11-12T11:02:21",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407034",
+            "state": "COMPLETED",
+            "elapsed_seconds": 633,
+            "start": "2026-11-12T10:50:22",
+            "end": "2026-11-12T11:00:55",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407121",
+            "state": "COMPLETED",
+            "elapsed_seconds": 516,
+            "start": "2026-11-12T11:02:25",
+            "end": "2026-11-12T11:11:01",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407036",
+            "state": "COMPLETED",
+            "elapsed_seconds": 522,
+            "start": "2026-11-12T10:50:22",
+            "end": "2026-11-12T10:59:04",
+            "requested_gpus": 2
+          },
+          {
+            "job_id": "407037",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T11:11:15",
+            "end": "2026-11-12T11:11:17",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "407038",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T11:11:47",
+            "end": "2026-11-12T11:11:48",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403382",
+            "state": "COMPLETED",
+            "elapsed_seconds": 4888,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T08:04:26",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403383",
+            "state": "COMPLETED",
+            "elapsed_seconds": 4261,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T07:53:59",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403384",
+            "state": "COMPLETED",
+            "elapsed_seconds": 3023,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T07:33:21",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403385",
+            "state": "COMPLETED",
+            "elapsed_seconds": 4216,
+            "start": "2026-11-12T06:42:58",
+            "end": "2026-11-12T07:53:14",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403386",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T08:07:43",
+            "end": "2026-11-12T08:07:45",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406019",
+            "state": "COMPLETED",
+            "elapsed_seconds": 440,
+            "start": "2026-11-12T08:35:28",
+            "end": "2026-11-12T08:42:48",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "406021",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T08:43:53",
+            "end": "2026-11-12T08:43:55",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403387",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T11:12:18",
+            "end": "2026-11-12T11:12:19",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403388",
+            "state": "COMPLETED",
+            "elapsed_seconds": 12054,
+            "start": "2026-11-12T11:12:49",
+            "end": "2026-11-12T14:33:43",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "409130",
+            "state": "COMPLETED",
+            "elapsed_seconds": 113,
+            "start": "2026-11-12T14:46:00",
+            "end": "2026-11-12T14:47:53",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "409132",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T14:48:03",
+            "end": "2026-11-12T14:48:04",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403389",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T14:33:53",
+            "end": "2026-11-12T14:33:55",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "409134",
+            "state": "COMPLETED",
+            "elapsed_seconds": 1,
+            "start": "2026-11-12T14:48:15",
+            "end": "2026-11-12T14:48:16",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403390",
+            "state": "COMPLETED",
+            "elapsed_seconds": 10802,
+            "start": "2026-11-12T14:48:37",
+            "end": "2026-11-12T17:48:39",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403391",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T17:49:34",
+            "end": "2026-11-12T17:49:36",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403392",
+            "state": "COMPLETED",
+            "elapsed_seconds": 14832,
+            "start": "2026-11-12T17:49:46",
+            "end": "2026-11-12T21:56:58",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "416716",
+            "state": "COMPLETED",
+            "elapsed_seconds": 276,
+            "start": "2026-11-13T06:39:22",
+            "end": "2026-11-13T06:43:58",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "416719",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-13T06:44:35",
+            "end": "2026-11-13T06:44:37",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "403393",
+            "state": "FAILED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-12T21:57:08",
+            "end": "2026-11-12T21:57:10",
+            "requested_gpus": 1
+          },
+          {
+            "job_id": "416723",
+            "state": "COMPLETED",
+            "elapsed_seconds": 2,
+            "start": "2026-11-13T06:45:06",
+            "end": "2026-11-13T06:45:08",
+            "requested_gpus": 1
+          }
+        ]
+      }
+    }
+  }
+}

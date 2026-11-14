@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "text_suffixes": [
+    ".cfg", ".csv", ".env", ".html", ".ini", ".json", ".jsonl",
+    ".md", ".py", ".sh", ".tex", ".txt", ".yaml", ".yml"
+  ],
+  "default_excludes": [
+    "**/__pycache__/**", "**/.pytest_cache/**", "**/.cache/**", "**/.venv/**",
+    "**/*.pyc", "**/.DS_Store", "**/.env"
+  ],
+  "replacements": {
+    "{project_root}/inits/huggingface/hub/models--Qwen--Qwen3.5-9B/snapshots/c202236235762e1c871ad0ccb60c8ee5ba337b9a": "Qwen/Qwen3.5-9B@c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+    "{project_root}/inits/huggingface/hub/models--google--gemma-3-12b-it/snapshots/96b6f1eccf38110c56df3a15bffe176da04bfd80": "google/gemma-3-12b-it@96b6f1eccf38110c56df3a15bffe176da04bfd80",
+    "{project_root}/inits/huggingface/hub/models--OpenGVLab--InternVL3_5-8B-HF/snapshots/741a7d03020411e666c6109218ab71e08151ef86": "OpenGVLab/InternVL3_5-8B-HF@741a7d03020411e666c6109218ab71e08151ef86",
+    "{project_root}/inits/huggingface/hub/models--OpenGVLab--InternVL3_5-38B-HF/snapshots/7c830fc25e874f9a861087e3c70587f2b9b555f3": "OpenGVLab/InternVL3_5-38B-HF@7c830fc25e874f9a861087e3c70587f2b9b555f3",
+    "{project_root}": "<PROJECT_ROOT>"
+  },
+  "github": [
+    {"src": "docs/mds/cv801-release/GITHUB_README.md", "dest": "README.md"},
+    {"src": "docs/mds/cv801-release/THIRD_PARTY_NOTICES.md", "dest": "THIRD_PARTY_NOTICES.md"},
+    {"src": "docs/mds/cv801-release/ENV.example", "dest": ".env.example"},
+    {"src": "docs/mds/cv801-release/GITIGNORE", "dest": ".gitignore"},
+    {"src": "docs/mds/cv801-release/requirements.txt", "dest": "requirements.txt"},
+    {"src": "CV801/__init__.py", "dest": "CV801/__init__.py"},
+    {"src": "CV801/scripts", "dest": "CV801/scripts", "kind": "tree", "include": ["aggregate_golden_results.py", "attach_vlm_eval_labels.py", "audit_agent_outputs.py", "audit_independent_vlm_evaluator_outputs.py", "canonicalize_json_responses.py", "evaluate_coco_predictions.py", "evaluate_vlm_predictions.py", "jsonl_row_ops.py", "predict_grounding_dino_coco.py", "predict_locateanything_coco.py", "predict_yolo_coco.py", "prepare_agent_review_inputs.py", "prepare_detection_dataset.py", "prepare_golden_test_inputs.py", "prepare_golden_vlm_references.py", "prepare_independent_vlm_evaluator_inputs.py", "prepare_t2_dataset.py", "prepare_vlm_dataset.py", "summarize_slurm_efficiency.py", "train_grounding_dino.py", "validate_detection_dataset.py"]},
+    {"src": "CV801/tests", "dest": "CV801/tests", "kind": "tree", "include": ["test_audit_independent_vlm_evaluator_outputs.py", "test_evaluate_coco_predictions.py", "test_evaluate_vlm_predictions.py", "test_jsonl_row_ops.py", "test_prepare_agent_review_inputs.py", "test_prepare_golden_test_inputs.py", "test_prepare_golden_vlm_references.py", "test_prepare_independent_vlm_evaluator_inputs.py", "test_prepare_t2_dataset.py", "test_prepare_vlm_dataset.py", "test_summarize_slurm_efficiency.py"]},
+    {"src": "CV801/patches", "dest": "CV801/patches", "kind": "tree"},
+    {"src": "execs/scpts/cv801_*.sh", "dest": "execs/scpts", "kind": "glob"},
+    {"src": "docs/mds/cv801-detection-training", "dest": "docs/protocols/detection", "kind": "tree"},
+    {"src": "docs/mds/cv801-vlm-training", "dest": "docs/protocols/vlm", "kind": "tree"},
+    {"src": "docs/mds/cv801-agent-review", "dest": "docs/protocols/agent-review", "kind": "tree"},
+    {"src": "docs/mds/cv801-golden-test", "dest": "docs/protocols/golden-test", "kind": "tree"},
+    {"src": "wkdrs/cv801-acl-paper/main.pdf", "dest": "results/report/main.pdf"},
+    {"src": "wkdrs/cv801-acl-paper/main.tex", "dest": "results/report/main.tex"},
+    {"src": "wkdrs/cv801-acl-paper/references.bib", "dest": "results/report/references.bib"},
+    {"src": "wkdrs/cv801-acl-paper/README.md", "dest": "results/report/README.md"},
+    {"src": "wkdrs/cv801-golden-test/final_summary.complete.json", "dest": "results/final_summary.complete.json"},
+    {"src": "wkdrs/cv801-golden-test/final_summary.complete.md", "dest": "results/final_summary.complete.md"},
+    {"src": "tasks/cv801-release", "dest": "release", "kind": "tree", "exclude": ["**/__pycache__/**"]}
+  ],
+  "hf_repositories": {
+    "data": {
+      "repo_type": "dataset",
+      "repo_name": "cv801-data",
+      "card": "docs/mds/cv801-release/hf/DATASET_CARD.md",
+      "entries": [
+        {"src": "datas/cv801_detection_v1", "dest": "detection", "kind": "tree"},
+        {"src": "datas/cv801_vlm_v1", "dest": "vlm-t1", "kind": "tree"},
+        {"src": "datas/cv801_vlm_t2_yolo26x_v1", "dest": "vlm-t2-yolo26x", "kind": "tree"},
+        {"src": "datas/cv801_golden_test_inputs_v1", "dest": "golden-inputs", "kind": "tree"},
+        {"src": "wkdrs/cv801-golden-test/vlm-references-final.jsonl", "dest": "golden-references/vlm-references-final.jsonl"}
+      ]
+    },
+    "results": {
+      "repo_type": "dataset",
+      "repo_name": "cv801-experiment-results",
+      "card": "docs/mds/cv801-release/hf/RESULTS_CARD.md",
+      "entries": [
+        {"src": "wkdrs/cv801-golden-test/final_summary.complete.json", "dest": "summary/final_summary.complete.json"},
+        {"src": "wkdrs/cv801-golden-test/final_summary.complete.md", "dest": "summary/final_summary.complete.md"},
+        {"src": "wkdrs/cv801-golden-test/efficiency.json", "dest": "summary/efficiency.json"},
+        {"src": "wkdrs/cv801-golden-test/review-metrics", "dest": "summary/review-metrics", "kind": "tree"},
+        {"src": "wkdrs/cv801-golden-test/detection-yolo-403226", "dest": "detection/yolo26x", "kind": "tree", "include": ["predictions.coco.json", "metrics*.json"]},
+        {"src": "wkdrs/cv801-golden-test/detection-grounding_dino-403227", "dest": "detection/grounding-dino-tiny", "kind": "tree", "include": ["predictions.coco.json", "metrics*.json"]},
+        {"src": "wkdrs/cv801-golden-test/detection-locateanything-403228", "dest": "detection/locateanything-3b", "kind": "tree", "include": ["predictions.coco.json", "raw_predictions.jsonl", "metrics*.json"]},
+        {"src": "wkdrs/cv801-golden-test/writer-t0-403229", "dest": "writer/t0", "kind": "tree", "include": ["predictions.jsonl", "metrics.golden.json", "metrics.golden.labeled.jsonl"]},
+        {"src": "wkdrs/cv801-golden-test/writer-t1-403230", "dest": "writer/t1", "kind": "tree", "include": ["predictions.jsonl", "metrics.golden.json", "metrics.golden.labeled.jsonl"]},
+        {"src": "wkdrs/cv801-golden-test/writer-t2-403232", "dest": "writer/t2", "kind": "tree", "include": ["predictions.jsonl", "metrics.golden.json", "metrics.golden.labeled.jsonl"]},
+        {"src": "wkdrs/cv801-golden-test/writer-qwen35-27b-baseline-403316", "dest": "writer/qwen35-27b", "kind": "tree", "include": ["predictions.jsonl", "metrics.golden.json", "metrics.golden.labeled.jsonl"]},
+        {"src": "wkdrs/cv801-agent-review/revision-rd-golden-403247", "dest": "agent-review/rd", "kind": "tree", "include": ["predictions.jsonl", "metrics.golden.json", "metrics.golden.labeled.jsonl"]},
+        {"src": "wkdrs/cv801-agent-review/revision-rc-golden-403318", "dest": "agent-review/rc", "kind": "tree", "include": ["predictions.jsonl", "metrics.golden.json", "metrics.golden.labeled.jsonl"]},
+        {"src": "wkdrs/cv801-agent-review/revision-rc_rd-golden-403320", "dest": "agent-review/rc-rd", "kind": "tree", "include": ["predictions.jsonl", "metrics.golden.json", "metrics.golden.labeled.jsonl"]},
+        {"src": "wkdrs/cv801-agent-review/revision-full-golden-403322", "dest": "agent-review/full-round1", "kind": "tree", "include": ["predictions.jsonl", "metrics.golden.json", "metrics.golden.labeled.jsonl"]},
+        {"src": "wkdrs/cv801-agent-review/revision-full-golden-round2-403332", "dest": "agent-review/full-round2", "kind": "tree", "include": ["predictions.jsonl", "metrics.golden.json", "metrics.golden.labeled.jsonl"]},
+        {"src": "wkdrs/cv801-agent-review/revision-full-golden-pixtral-rc-403390", "dest": "agent-review/pixtral-visual-reviewer", "kind": "tree", "include": ["predictions.jsonl", "metrics.golden.json", "metrics.golden.labeled.jsonl"]},
+        {"src": "wkdrs/cv801-independent-eval/golden-t0", "dest": "independent-eval/t0", "kind": "tree", "include": ["inputs.jsonl", "predictions.jsonl", "metrics.json"]},
+        {"src": "wkdrs/cv801-independent-eval/golden-t1", "dest": "independent-eval/t1", "kind": "tree", "include": ["inputs.jsonl", "predictions.jsonl", "metrics.json"]},
+        {"src": "wkdrs/cv801-independent-eval/golden-t2", "dest": "independent-eval/t2", "kind": "tree", "include": ["inputs.jsonl", "predictions.jsonl", "metrics.json"]},
+        {"src": "wkdrs/cv801-independent-eval/golden-qwen35-27b", "dest": "independent-eval/qwen35-27b", "kind": "tree", "include": ["inputs.jsonl", "predictions.jsonl", "metrics.json"]},
+        {"src": "wkdrs/cv801-independent-eval/golden-rc", "dest": "independent-eval/rc", "kind": "tree", "include": ["inputs.jsonl", "predictions.jsonl", "metrics.json"]},
+        {"src": "wkdrs/cv801-independent-eval/golden-rd", "dest": "independent-eval/rd", "kind": "tree", "include": ["inputs.jsonl", "predictions.jsonl", "metrics.json"]},
+        {"src": "wkdrs/cv801-independent-eval/golden-rc-rd", "dest": "independent-eval/rc-rd", "kind": "tree", "include": ["inputs.jsonl", "predictions.jsonl", "metrics.json"]},
+        {"src": "wkdrs/cv801-independent-eval/golden-full-round1", "dest": "independent-eval/full-round1", "kind": "tree", "include": ["inputs.jsonl", "predictions.jsonl", "metrics.json"]},
+        {"src": "wkdrs/cv801-independent-eval/golden-full-round2", "dest": "independent-eval/full-round2", "kind": "tree", "include": ["inputs.jsonl", "predictions.jsonl", "metrics.json"]},
+        {"src": "wkdrs/cv801-acl-paper", "dest": "report", "kind": "tree", "include": ["README.md", "main.pdf", "main.tex", "references.bib", "terminology.md"]},
+        {"src": "wkdrs/cv801-golden-test/gemma3-reviewer-swap-422455", "dest": "gemma3-reviewer/run", "kind": "tree", "include": ["*.audit.json", "*_predictions.jsonl", "submission.env"], "optional": true},
+        {"src": "wkdrs/cv801-agent-review/revision-full-golden-gemma3-rc-422465", "dest": "gemma3-reviewer/revision", "kind": "tree", "include": ["predictions.jsonl", "metrics.golden.json", "metrics.golden.labeled.jsonl"], "complete_if": "metrics.golden.json", "optional": true},
+        {"src": "wkdrs/cv801-agent-review/recheck-golden-gemma3-rc-422468", "dest": "gemma3-reviewer/recheck", "kind": "tree", "include": ["predictions.jsonl"], "optional": true},
+        {"src": "wkdrs/cv801-independent-eval/golden-gemma3-full-422455", "dest": "gemma3-reviewer/independent-eval", "kind": "tree", "include": ["inputs.jsonl", "predictions.jsonl", "metrics.json"], "complete_if": "metrics.json", "optional": true}
+      ]
+    },
+    "yolo26x": {
+      "repo_type": "model",
+      "repo_name": "cv801-yolo26x",
+      "card": "docs/mds/cv801-release/hf/YOLO26X_CARD.md",
+      "entries": [
+        {"src": "wkdrs/cv801-yolo26x/train-357714/weights/best.pt", "dest": "best.pt"},
+        {"src": "wkdrs/cv801-yolo26x/train-357714/args.yaml", "dest": "args.yaml"},
+        {"src": "wkdrs/cv801-yolo26x/train-357714/results.csv", "dest": "results.csv"},
+        {"src": "wkdrs/cv801-golden-test/detection-yolo-403226/metrics.complete.json", "dest": "golden_metrics.json"}
+      ]
+    },
+    "grounding-dino-tiny": {
+      "repo_type": "model",
+      "repo_name": "cv801-grounding-dino-tiny",
+      "card": "docs/mds/cv801-release/hf/GROUNDING_DINO_CARD.md",
+      "entries": [
+        {"src": "wkdrs/cv801-grounding-dino/train-357715/final", "dest": ".", "kind": "tree", "max_depth": 0},
+        {"src": "wkdrs/cv801-grounding-dino/coco-val-381674/metrics.coco.json", "dest": "validation_metrics.json"},
+        {"src": "wkdrs/cv801-golden-test/detection-grounding_dino-403227/metrics.complete.json", "dest": "golden_metrics.json"}
+      ]
+    },
+    "locateanything-3b": {
+      "repo_type": "model",
+      "repo_name": "cv801-locateanything-3b",
+      "card": "docs/mds/cv801-release/hf/LOCATEANYTHING_CARD.md",
+      "restricted": true,
+      "entries": [
+        {"src": "wkdrs/cv801-locateanything/train-357716", "dest": ".", "kind": "tree", "max_depth": 0, "exclude": ["trainer_state.json", "training_args.bin"]},
+        {"src": "wkdrs/cv801-locateanything/coco-val-381670/metrics.coco.json", "dest": "validation_metrics.json"},
+        {"src": "wkdrs/cv801-golden-test/detection-locateanything-403228/metrics.complete.json", "dest": "golden_metrics.json"}
+      ]
+    },
+    "qwen35-t1-lora": {
+      "repo_type": "model",
+      "repo_name": "cv801-qwen3.5-9b-t1-lora",
+      "card": "docs/mds/cv801-release/hf/QWEN_T1_CARD.md",
+      "entries": [
+        {"src": "wkdrs/cv801-qwen35/t1-train-358388/v0-20261104-192033/checkpoint-1197", "dest": ".", "kind": "tree", "max_depth": 0, "include": ["adapter_config.json", "adapter_model.safetensors", "additional_config.json", "args.json"]},
+        {"src": "wkdrs/cv801-qwen35/t1-val-sharded-381885/metrics_v3.json", "dest": "validation_metrics.json"},
+        {"src": "wkdrs/cv801-golden-test/writer-t1-403230/metrics.golden.json", "dest": "golden_metrics.json"}
+      ]
+    },
+    "qwen35-t2-lora": {
+      "repo_type": "model",
+      "repo_name": "cv801-qwen3.5-9b-t2-lora",
+      "card": "docs/mds/cv801-release/hf/QWEN_T2_CARD.md",
+      "entries": [
+        {"src": "wkdrs/cv801-qwen35/t2-train-382484/v0-20261109-131602/checkpoint-1197", "dest": ".", "kind": "tree", "max_depth": 0, "include": ["adapter_config.json", "adapter_model.safetensors", "additional_config.json", "args.json"]},
+        {"src": "wkdrs/cv801-qwen35/t2-val-383368/metrics_v3.json", "dest": "validation_metrics.json"},
+        {"src": "wkdrs/cv801-golden-test/writer-t2-403232/metrics.golden.json", "dest": "golden_metrics.json"}
+      ]
+    }
+  }
+}
