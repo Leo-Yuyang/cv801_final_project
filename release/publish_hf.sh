@@ -19,7 +19,7 @@ source "${map_file}"
 
 execute="${EXECUTE:-0}"
 namespace="${HF_NAMESPACE:-}"
-private="${HF_PRIVATE:-1}"
+private="${HF_PRIVATE:-0}"
 allow_locateanything="${ALLOW_LOCATEANYTHING_WEIGHTS:-NO}"
 hf_bin="${HF_BIN:-$(command -v hf || true)}"
 [[ -n "${hf_bin}" && -x "${hf_bin}" ]] || { echo "hf CLI is not available." >&2; exit 1; }
@@ -40,23 +40,13 @@ if [[ "${private}" == "1" ]]; then
 fi
 
 repo_keys=(
+  models
   data
-  results
-  yolo26x
-  grounding-dino-tiny
-  locateanything-3b
-  qwen35-t1-lora
-  qwen35-t2-lora
 )
-repo_types=(dataset dataset model model model model model)
+repo_types=(model dataset)
 repo_names=(
-  "${HF_DATA_REPO:-cv801-data}"
-  "${HF_RESULTS_REPO:-cv801-experiment-results}"
-  "${HF_YOLO26X_REPO:-cv801-yolo26x}"
-  "${HF_GROUNDING_DINO_REPO:-cv801-grounding-dino-tiny}"
-  "${HF_LOCATEANYTHING_REPO:-cv801-locateanything-3b}"
-  "${HF_QWEN_T1_REPO:-cv801-qwen3.5-9b-t1-lora}"
-  "${HF_QWEN_T2_REPO:-cv801-qwen3.5-9b-t2-lora}"
+  "${HF_MODELS_REPO:-cv801_models}"
+  "${HF_DATA_REPO:-cv801_data}"
 )
 
 echo "hf_publish_mode=$([[ "${execute}" == "1" ]] && echo execute || echo dry-run)"

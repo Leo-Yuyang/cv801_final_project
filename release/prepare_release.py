@@ -237,22 +237,22 @@ def git_revision() -> str | None:
 
 
 def write_pending(path: Path, optional_missing: list[str]) -> None:
-    optional_lines = "\n".join(f"- `{item}`" for item in optional_missing) or "- 无"
-    text = f"""# 发布前待确认项目
+    optional_lines = "\n".join(f"- `{item}`" for item in optional_missing) or "- None"
+    text = f"""# Pre-release checklist
 
-## 尚未生成的可选实验物料
+## Optional experiment artifacts not found
 
 {optional_lines}
 
-Gemma 3 reviewer 替换实验仍运行时，上述文件缺失是正常状态。链完成后重新运行构建器即可增量加入；已有 InternVL/Pixtral 结果不会删除。
+Missing optional files are expected while an additive Gemma 3 reviewer experiment is still running. Rerun the builder after the chain completes to include them; existing InternVL/Pixtral results are retained.
 
-## 外部目标与授权
+## External targets and authorization
 
-- 填写 Hugging Face namespace，并在同一登录节点执行 `hf auth login` / `hf auth whoami`。
-- 创建新的空 GitHub 仓库并填写 `GITHUB_REPO_URL`；当前 STAR 上游 remote 不能作为发布目标。
-- 确认项目代码许可证、数据授权、作者与引用信息。
-- 保持数据和 Golden Test reference 私有，直至公开测试策略通过审阅。
-- 公开 LocateAnything 完整微调权重前重新核对上游非商业科研许可与再分发条款。
+- Set the Hugging Face namespace and run `hf auth login` / `hf auth whoami` on the upload host.
+- Set `GITHUB_REPO_URL` to the intended public release repository.
+- Confirm the project code license, data permissions, authorship, and citation details.
+- Preserve Golden Test reference isolation until every evaluated configuration is frozen.
+- Recheck the upstream non-commercial research and redistribution terms before publishing the full LocateAnything checkpoint.
 """
     path.write_text(text, encoding="utf-8")
 
