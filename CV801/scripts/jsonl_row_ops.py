@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select, replace, and merge JSONL rows with strict image alignment checks."""
+"""Select, replace, and merge JSONL rows with strict input alignment checks."""
 
 from __future__ import annotations
 
@@ -116,10 +116,19 @@ def merge_rows(sources: list[Path], reference_input: Path, output: Path) -> int:
     if len(merged) != len(references):
         raise ValueError(f"Merged count {len(merged)} does not match reference count {len(references)}")
     for index, (prediction, reference) in enumerate(zip(merged, references, strict=True), 1):
-        if first_image(prediction) != first_image(reference):
-            raise ValueError(f"Image mismatch at merged line {index}")
+        if prediction.get("images"):
+            if first_image(prediction) != first_image(reference):
+                raise ValueError(f"Image mismatch at merged line {index}")
+        elif last_message_content(prediction, "user") != last_message_content(reference, "user"):
+            raise ValueError(f"Prompt mismatch at merged line {index}")
     write_jsonl(merged, output)
     return len(merged)
+
+
+def concatenate_rows(sources: list[Path], output: Path) -> int:
+    rows = [row for source in sources for row in read_jsonl(source)]
+    write_jsonl(rows, output)
+    return len(rows)
 
 
 def append_user_instruction(source: Path, output: Path, instruction: str) -> int:
@@ -172,6 +181,10 @@ def parse_args() -> argparse.Namespace:
     merge.add_argument("--reference-input", type=Path, required=True)
     merge.add_argument("--output", type=Path, required=True)
 
+    concatenate = subparsers.add_parser("concat")
+    concatenate.add_argument("--sources", type=Path, nargs="+", required=True)
+    concatenate.add_argument("--output", type=Path, required=True)
+
     append = subparsers.add_parser("append-instruction")
     append.add_argument("--source", type=Path, required=True)
     append.add_argument("--output", type=Path, required=True)
@@ -191,6 +204,8 @@ def main() -> None:
         count = replace_responses(args.source, args.replacements, args.output, args.line_numbers)
     elif args.command == "merge":
         count = merge_rows(args.sources, args.reference_input, args.output)
+    elif args.command == "concat":
+        count = concatenate_rows(args.sources, args.output)
     else:
         count = append_user_instruction(args.source, args.output, args.instruction)
     print(json.dumps({"command": args.command, "samples": count}))

@@ -57,6 +57,7 @@ else
   run_name="t1-train-${SLURM_JOB_ID}"
 fi
 output_dir="${project_root}/wkdrs/cv801-qwen35/${run_name}"
+master_port="${MASTER_PORT:-$((20000 + SLURM_JOB_ID % 20000))}"
 
 export APPTAINERENV_HF_HOME="${project_root}/inits/huggingface"
 export APPTAINERENV_TOKENIZERS_PARALLELISM=true
@@ -64,9 +65,10 @@ export APPTAINERENV_NCCL_DEBUG="${NCCL_DEBUG:-WARN}"
 export APPTAINERENV_OMP_NUM_THREADS=8
 export APPTAINERENV_IMAGE_MAX_TOKEN_NUM="${IMAGE_MAX_TOKEN_NUM:-768}"
 export APPTAINERENV_PYTORCH_HIP_ALLOC_CONF="expandable_segments:True"
+export APPTAINERENV_MASTER_PORT="${master_port}"
 
 apptainer exec --rocm --bind "${project_root}:${project_root}" --pwd "${project_root}" \
-  "${container}" env NPROC_PER_NODE="${gpus}" "${swift_bin}" sft \
+  "${container}" env NPROC_PER_NODE="${gpus}" MASTER_PORT="${master_port}" "${swift_bin}" sft \
   --model "${MODEL_PATH:-Qwen/Qwen3.5-9B}" \
   --use_hf true \
   --dataset "${train_data}" \

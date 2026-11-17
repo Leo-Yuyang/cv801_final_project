@@ -8,6 +8,7 @@ This repository contains the executable training, inference, evaluation, and aud
 - Experimental report: [`results/report/main.pdf`](results/report/main.pdf)
 - Machine-readable summary: [`results/final_summary.complete.json`](results/final_summary.complete.json)
 - Complete result tables: [`results/final_summary.complete.md`](results/final_summary.complete.md)
+- Additive Writer-scale results: [`results/writer-scale/README.md`](results/writer-scale/README.md)
 
 > The Hugging Face repositories are publicly readable and do not require authentication for download. Publication does not replace the artifact-specific license terms described below.
 
@@ -17,7 +18,7 @@ Only two Hugging Face repositories are used:
 
 | Repository | Type | Contents |
 |---|---|---|
-| [`leo20000306/cv801_models`](https://huggingface.co/leo20000306/cv801_models) | Model | All five project-trained checkpoints, configurations, and checkpoint-level metrics |
+| [`leo20000306/cv801_models`](https://huggingface.co/leo20000306/cv801_models) | Model | Nine released project-trained checkpoints, configurations, and checkpoint-level metrics |
 | [`leo20000306/cv801_data`](https://huggingface.co/datasets/leo20000306/cv801_data) | Dataset | Processed datasets, Golden inputs/references, per-sample predictions, audit evidence, aggregate metrics, and the report |
 
 `cv801_models` is organized by model family:
@@ -28,6 +29,10 @@ grounding-dino-tiny/
 locateanything-3b/
 qwen35-t1-lora/
 qwen35-t2-lora/
+qwen35-2b-t1-lora/
+qwen35-2b-t2-lora/
+qwen35-4b-t1-lora/
+qwen35-4b-t2-lora/
 ```
 
 `cv801_data` separates inputs from outputs:
@@ -36,6 +41,13 @@ qwen35-t2-lora/
 dataset/                 # processed detection, T1, T2, and Golden Test data
 results/                 # predictions, metrics, audits, efficiency data, and report
 ```
+
+Completed additive Writer-by-reviewer releases place the paired 3 x 3 analysis
+under `results/writer-reviewer-grid/`. Treat the grid as complete only when the
+directory contains the nine cells' structured and independent-evaluator
+outputs, paired-analysis JSON, report tables, per-image sufficient statistics,
+and repair-lineage files together. This atomic boundary prevents partial cells
+from being presented as final results.
 
 ## 2. Quick start
 
@@ -98,6 +110,10 @@ hf download leo20000306/cv801_data \
   --include "results/*" \
   --local-dir artifacts/cv801_data
 ```
+
+The Hugging Face repositories do not currently provide DOIs. For an exact
+reproduction, record the Hub commit hash and verify `MANIFEST.sha256` rather
+than citing only the mutable `main` branch.
 
 ### Dataset definition
 
@@ -170,12 +186,17 @@ Project training uses the following immutable upstream revisions. `MODEL_PATH` m
 |---|---|---|
 | Grounding DINO | [`IDEA-Research/grounding-dino-tiny`](https://huggingface.co/IDEA-Research/grounding-dino-tiny) | `a2bb814dd30d776dcf7e30523b00659f4f141c71` |
 | LocateAnything | [`nvidia/LocateAnything-3B`](https://huggingface.co/nvidia/LocateAnything-3B) | `c32291ca5e996f5a7a485845b4f57a233936bba0` |
+| Small Writer | [`Qwen/Qwen3.5-2B`](https://huggingface.co/Qwen/Qwen3.5-2B) | `15852e8c16360a2fea060d615a32b45270f8a8fc` |
+| Small Writer | [`Qwen/Qwen3.5-4B`](https://huggingface.co/Qwen/Qwen3.5-4B) | `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a` |
 | T0/T1/T2 Writer and Judge | [`Qwen/Qwen3.5-9B`](https://huggingface.co/Qwen/Qwen3.5-9B) | `c202236235762e1c871ad0ccb60c8ee5ba337b9a` |
 | 27B Writer baseline | [`Qwen/Qwen3.5-27B`](https://huggingface.co/Qwen/Qwen3.5-27B) | `fc05daec18b0a78c049392ed2e771dde82bdf654` |
-| Visual reviewer | [`OpenGVLab/InternVL3_5-8B-HF`](https://huggingface.co/OpenGVLab/InternVL3_5-8B-HF) | `741a7d03020411e666c6109218ab71e08151ef86` |
-| Domain reviewer | [`OpenGVLab/InternVL3_5-38B-HF`](https://huggingface.co/OpenGVLab/InternVL3_5-38B-HF) | `7c830fc25e874f9a861087e3c70587f2b9b555f3` |
+| R-low Rc reviewer | [`google/gemma-3-4b-it`](https://huggingface.co/google/gemma-3-4b-it) | `093f9f388b31de276ce2de164bdc2081324b9767` |
+| R-mid Rc reviewer | [`google/gemma-3-12b-it`](https://huggingface.co/google/gemma-3-12b-it) | `96b6f1eccf38110c56df3a15bffe176da04bfd80` |
+| R-high Rc reviewer | [`google/gemma-3-27b-it`](https://huggingface.co/google/gemma-3-27b-it) | `005ad3404e59d6023443cb575daa05336842228a` |
+| R-low Rd reviewer / original Rc | [`OpenGVLab/InternVL3_5-8B-HF`](https://huggingface.co/OpenGVLab/InternVL3_5-8B-HF) | `741a7d03020411e666c6109218ab71e08151ef86` |
+| R-mid Rd reviewer | [`OpenGVLab/InternVL3_5-14B-HF`](https://huggingface.co/OpenGVLab/InternVL3_5-14B-HF) | `226b96d5912e69159abc0384cefcbd51487fdce0` |
+| R-high Rd reviewer / original Rd | [`OpenGVLab/InternVL3_5-38B-HF`](https://huggingface.co/OpenGVLab/InternVL3_5-38B-HF) | `7c830fc25e874f9a861087e3c70587f2b9b555f3` |
 | Reviewer swap / evaluator | [`mistral-community/pixtral-12b`](https://huggingface.co/mistral-community/pixtral-12b) | `c2756cbbb9422eba9f6c5c439a214b0392dfc998` |
-| Additive reviewer experiment | [`google/gemma-3-12b-it`](https://huggingface.co/google/gemma-3-12b-it) | `96b6f1eccf38110c56df3a15bffe176da04bfd80` |
 
 Core training downloads:
 
@@ -192,6 +213,16 @@ hf download Qwen/Qwen3.5-9B \
   --revision c202236235762e1c871ad0ccb60c8ee5ba337b9a \
   --local-dir inits/base-models/qwen3.5-9b
 ```
+
+The controlled Writer-scale extension uses the same command with the pinned
+2B or 4B repository and revision from the table. It is orchestrated by
+`execs/scpts/cv801_writer_scale_train_submit.sh`, followed by
+`cv801_writer_scale_posttrain.sh` and `cv801_writer_eval_submit.sh`.
+
+The controlled reviewer-capacity extension downloads all three Gemma Rc tiers
+and all three InternVL Rd tiers at the pinned revisions above. Gemma repositories
+may require acceptance of the publisher's Hugging Face terms and an
+authenticated token even though the resulting CV801 artifacts are public.
 
 Ultralytics 8.4.202 downloads the public `yolo26x.pt` checkpoint on the first YOLO training run and stores it under `inits/yolo/`. You may instead prepare the file in advance and pass it through `MODEL_PATH`. All upstream licenses and access terms remain in force.
 
@@ -271,6 +302,10 @@ hf download leo20000306/cv801_models \
   --include "qwen35-t2-lora/*" \
   --local-dir inits/project-models
 ```
+
+For example, the released 4B-T2 scaling adapter is selected with
+`--include "qwen35-4b-t2-lora/*"`. It requires the pinned
+`Qwen/Qwen3.5-4B` base checkpoint; it is not a standalone full model.
 
 ### Detection inference on reference-free Golden inputs
 
@@ -382,6 +417,17 @@ The vision-language matrix includes:
 - Agent Review: visual reviewer Rc, domain reviewer Rd, text-only Judge, Writer revision, Judge recheck, and an independent Pixtral evaluator.
 - Extensions: a Qwen3.5-27B Writer baseline, a Pixtral reviewer swap, and an additive Gemma 3 reviewer branch.
 
+The frozen Writer-only scaling extension is reported separately in
+[`results/writer-scale/README.md`](results/writer-scale/README.md). Under the
+fixed protocol, 2B-T2, 4B-T2, and 9B-T2 achieved schema-valid rates of 0.1%,
+5.2%, and 99.5%, respectively. The 4B-T2 independent visual score was high
+despite its low schema validity, so model-based visual score is not treated as
+a substitute for interface validity. The completed paired `3 x 3`
+Writer-by-reviewer table and its confidence intervals are included in the PDF
+and under [`results/writer-reviewer-grid/`](results/writer-reviewer-grid/).
+All nine cells contain the same 1,000 Golden Test images; the analysis uses
+10,000 paired image-cluster bootstrap resamples with seed `20261104`.
+
 Human rating and the Direct GPT-6 Astra baseline were explicitly cancelled and are not missing experiments. The bundled PDF freezes the completed InternVL/Pixtral matrix. The Gemma branch is additive and does not remove or overwrite existing results. See the report and `cv801_data/results/` for complete values and evidence boundaries.
 
 ## 10. Repository layout and integrity checks
@@ -411,3 +457,17 @@ The legacy `agroannotate` UI in the original delivery had empty `prompts/` and `
 This repository currently has no unified project license; project code is all-rights-reserved by default. Upstream models, Ultralytics, LocateAnything/Eagle, data sources, and third-party code retain their own terms. LocateAnything and its derivative checkpoint are restricted to non-commercial research or evaluation. Public availability does not waive or replace those terms.
 
 A formal project `LICENSE` and citation file should be added only after the authors finalize code licensing, data permissions, authorship, and citation details. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for the third-party dependency scope.
+
+## 12. Data and code availability
+
+The executable code and frozen protocols are available in this GitHub
+repository. Processed data, Golden inputs and references, predictions, metrics,
+and report material are mapped explicitly to
+[`leo20000306/cv801_data`](https://huggingface.co/datasets/leo20000306/cv801_data).
+Released fine-tuned checkpoints and LoRA adapters are mapped to
+[`leo20000306/cv801_models`](https://huggingface.co/leo20000306/cv801_models).
+Public upstream base weights are obtained from their original repositories and
+are not mirrored. None of these records currently has a DOI; cite the Git or
+Hub commit hash used and verify the associated `MANIFEST.sha256`. Public access
+does not create a blanket licence or supersede source-data and upstream-model
+terms.

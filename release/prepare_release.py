@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import errno
 import fnmatch
 import hashlib
 import json
@@ -158,8 +159,14 @@ def materialize(
             copy_sanitized(source, destination, replacements)
             mode = "sanitized-copy"
         elif hardlink_binary:
-            os.link(source, destination)
-            mode = "hardlink"
+            try:
+                os.link(source, destination)
+                mode = "hardlink"
+            except OSError as error:
+                if error.errno != errno.EXDEV:
+                    raise
+                shutil.copy2(source, destination)
+                mode = "copy-cross-device"
         else:
             shutil.copy2(source, destination)
             mode = "copy"
@@ -236,21 +243,33 @@ def git_revision() -> str | None:
     return result.stdout.strip() if result.returncode == 0 else None
 
 
-def write_pending(path: Path, optional_missing: list[str]) -> None:
+def write_pending(path: Path, optional_missing: list[str], grid_complete: bool) -> None:
     optional_lines = "\n".join(f"- `{item}`" for item in optional_missing) or "- None"
+    if grid_complete:
+        grid_status = """- The complete paired `3 x 3` Writer-by-reviewer analysis is included.
+- All nine cells passed the identical 1,000-ID audit before table generation.
+- The paired-analysis JSON, Markdown tables, LaTeX tables, and repair lineage are included additively; prior results remain present."""
+    else:
+        grid_status = """- The frozen 2B/4B Writer-only checkpoints, predictions, and metrics are included.
+- The `3 x 3` Writer-by-reviewer grid is deliberately excluded until all nine cells pass the identical 1,000-ID audit and paired bootstrap analysis.
+- The original PDF remains unchanged; the Writer-scale LaTeX file is labelled as an additive draft."""
     text = f"""# Pre-release checklist
 
 ## Optional experiment artifacts not found
 
 {optional_lines}
 
-Missing optional files are expected while an additive Gemma 3 reviewer experiment is still running. Rerun the builder after the chain completes to include them; existing InternVL/Pixtral results are retained.
+Missing optional files belong to additive experiment branches. Rerun the builder after a branch completes to include it; existing results are retained.
+
+## Writer-scale publication boundary
+
+{grid_status}
 
 ## External targets and authorization
 
 - Set the Hugging Face namespace and run `hf auth login` / `hf auth whoami` on the upload host.
 - Set `GITHUB_REPO_URL` to the intended public release repository.
-- Confirm the project code license, data permissions, authorship, and citation details.
+- Confirm the project code licence, data permissions, authorship, and citation details; no DOI or blanket open licence is asserted by this package.
 - Preserve Golden Test reference isolation until every evaluated configuration is frozen.
 - Recheck the upstream non-commercial research and redistribution terms before publishing the full LocateAnything checkpoint.
 """
@@ -275,12 +294,16 @@ def main() -> int:
         "github": {},
         "hf": {},
         "optional_missing": [],
+        "writer_reviewer_grid_complete": False,
     }
 
     github_pairs: list[tuple[Path, PurePosixPath]] = []
     for entry in config["github"]:
         pairs = expand_entry(entry, default_excludes)
         if not pairs:
+            if entry.get("optional"):
+                inventory["optional_missing"].append(entry["src"])
+                continue
             raise FileNotFoundError(f"Required GitHub release entry is empty: {entry['src']}")
         github_pairs.extend(pairs)
     github_root = package_root / "github"
@@ -338,8 +361,21 @@ def main() -> int:
             "materialization": materialized,
         }
 
+    grid_complete = all(
+        (PROJECT_ROOT / "wkdrs" / "cv801-writer-reviewer-statistics" / name).is_file()
+        for name in (
+            "grid_samples.csv",
+            "paired_analysis.json",
+            "paired_analysis.md",
+            "report_tables.tex",
+            "report_tables.md",
+            "repair_lineage.json",
+            "repair_lineage.md",
+        )
+    )
+    inventory["writer_reviewer_grid_complete"] = grid_complete
     scan_release(package_root, config)
-    write_pending(package_root / "PENDING.md", inventory["optional_missing"])
+    write_pending(package_root / "PENDING.md", inventory["optional_missing"], grid_complete)
     shutil.copy2(REPO_MAP_TEMPLATE, package_root / "repo-map.env.example")
     inventory_path = package_root / "release_inventory.json"
     inventory_path.write_text(json.dumps(inventory, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

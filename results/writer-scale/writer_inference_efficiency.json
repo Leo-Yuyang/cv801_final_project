@@ -1,0 +1,220 @@
+{
+  "protocol": "cv801_slurm_efficiency_v1",
+  "generated_at_utc": "2026-11-17T09:49:55.043754+00:00",
+  "accounting_note": "GPU-hours sum elapsed allocation time; execution span is max(end)-min(start) for each logical system and excludes queue wait. Shared stages are charged to each system that requires them. Jobs listed as accepted post-inference failures produced complete outputs that passed a corrected independent audit.",
+  "systems": {
+    "2B-T0": {
+      "job_ids": [
+        "443953"
+      ],
+      "job_count": 1,
+      "images": 1000,
+      "gpu_seconds": 35624,
+      "gpu_hours": 9.895555555555555,
+      "gpu_hours_per_image": 0.009895555555555555,
+      "execution_span_seconds": 8906.0,
+      "execution_span_seconds_per_image": 8.906,
+      "post_inference_audit_failures_accepted": [],
+      "jobs": [
+        {
+          "job_id": "443953",
+          "state": "COMPLETED",
+          "elapsed_seconds": 8906,
+          "start": "2026-11-15T09:23:16",
+          "end": "2026-11-15T11:51:42",
+          "requested_gpus": 4
+        }
+      ]
+    },
+    "2B-T1": {
+      "job_ids": [
+        "448130"
+      ],
+      "job_count": 1,
+      "images": 1000,
+      "gpu_seconds": 93008,
+      "gpu_hours": 25.835555555555555,
+      "gpu_hours_per_image": 0.025835555555555556,
+      "execution_span_seconds": 23252.0,
+      "execution_span_seconds_per_image": 23.252,
+      "post_inference_audit_failures_accepted": [],
+      "jobs": [
+        {
+          "job_id": "448130",
+          "state": "COMPLETED",
+          "elapsed_seconds": 23252,
+          "start": "2026-11-15T13:10:08",
+          "end": "2026-11-15T19:37:40",
+          "requested_gpus": 4
+        }
+      ]
+    },
+    "2B-T2": {
+      "job_ids": [
+        "448138"
+      ],
+      "job_count": 1,
+      "images": 1000,
+      "gpu_seconds": 18612,
+      "gpu_hours": 5.17,
+      "gpu_hours_per_image": 0.00517,
+      "execution_span_seconds": 4653.0,
+      "execution_span_seconds_per_image": 4.653,
+      "post_inference_audit_failures_accepted": [],
+      "jobs": [
+        {
+          "job_id": "448138",
+          "state": "COMPLETED",
+          "elapsed_seconds": 4653,
+          "start": "2026-11-15T14:47:47",
+          "end": "2026-11-15T16:05:20",
+          "requested_gpus": 4
+        }
+      ]
+    },
+    "4B-T0": {
+      "job_ids": [
+        "443961"
+      ],
+      "job_count": 1,
+      "images": 1000,
+      "gpu_seconds": 106580,
+      "gpu_hours": 29.605555555555554,
+      "gpu_hours_per_image": 0.029605555555555555,
+      "execution_span_seconds": 26645.0,
+      "execution_span_seconds_per_image": 26.645,
+      "post_inference_audit_failures_accepted": [],
+      "jobs": [
+        {
+          "job_id": "443961",
+          "state": "COMPLETED",
+          "elapsed_seconds": 26645,
+          "start": "2026-11-15T09:23:48",
+          "end": "2026-11-15T16:47:53",
+          "requested_gpus": 4
+        }
+      ]
+    },
+    "4B-T1": {
+      "job_ids": [
+        "447989"
+      ],
+      "job_count": 1,
+      "images": 1000,
+      "gpu_seconds": 73524,
+      "gpu_hours": 20.423333333333332,
+      "gpu_hours_per_image": 0.02042333333333333,
+      "execution_span_seconds": 18381.0,
+      "execution_span_seconds_per_image": 18.381,
+      "post_inference_audit_failures_accepted": [],
+      "jobs": [
+        {
+          "job_id": "447989",
+          "state": "COMPLETED",
+          "elapsed_seconds": 18381,
+          "start": "2026-11-15T12:42:53",
+          "end": "2026-11-15T17:49:14",
+          "requested_gpus": 4
+        }
+      ]
+    },
+    "4B-T2": {
+      "job_ids": [
+        "449714"
+      ],
+      "job_count": 1,
+      "images": 1000,
+      "gpu_seconds": 305960,
+      "gpu_hours": 84.9888888888889,
+      "gpu_hours_per_image": 0.08498888888888889,
+      "execution_span_seconds": 38245.0,
+      "execution_span_seconds_per_image": 38.245,
+      "post_inference_audit_failures_accepted": [],
+      "jobs": [
+        {
+          "job_id": "449714",
+          "state": "COMPLETED",
+          "elapsed_seconds": 38245,
+          "start": "2026-11-15T17:35:37",
+          "end": "2026-11-16T04:13:02",
+          "requested_gpus": 8
+        }
+      ]
+    },
+    "9B-T0": {
+      "job_ids": [
+        "403229"
+      ],
+      "job_count": 1,
+      "images": 1000,
+      "gpu_seconds": 30664,
+      "gpu_hours": 8.517777777777777,
+      "gpu_hours_per_image": 0.008517777777777777,
+      "execution_span_seconds": 3833.0,
+      "execution_span_seconds_per_image": 3.833,
+      "post_inference_audit_failures_accepted": [
+        "403229"
+      ],
+      "jobs": [
+        {
+          "job_id": "403229",
+          "state": "FAILED",
+          "elapsed_seconds": 3833,
+          "start": "2026-11-11T20:24:47",
+          "end": "2026-11-11T21:28:40",
+          "requested_gpus": 8
+        }
+      ]
+    },
+    "9B-T1": {
+      "job_ids": [
+        "403230"
+      ],
+      "job_count": 1,
+      "images": 1000,
+      "gpu_seconds": 145440,
+      "gpu_hours": 40.4,
+      "gpu_hours_per_image": 0.0404,
+      "execution_span_seconds": 18180.0,
+      "execution_span_seconds_per_image": 18.18,
+      "post_inference_audit_failures_accepted": [
+        "403230"
+      ],
+      "jobs": [
+        {
+          "job_id": "403230",
+          "state": "FAILED",
+          "elapsed_seconds": 18180,
+          "start": "2026-11-11T20:31:15",
+          "end": "2026-11-12T01:34:15",
+          "requested_gpus": 8
+        }
+      ]
+    },
+    "9B-T2": {
+      "job_ids": [
+        "403232"
+      ],
+      "job_count": 1,
+      "images": 1000,
+      "gpu_seconds": 32376,
+      "gpu_hours": 8.993333333333334,
+      "gpu_hours_per_image": 0.008993333333333334,
+      "execution_span_seconds": 4047.0,
+      "execution_span_seconds_per_image": 4.047,
+      "post_inference_audit_failures_accepted": [
+        "403232"
+      ],
+      "jobs": [
+        {
+          "job_id": "403232",
+          "state": "FAILED",
+          "elapsed_seconds": 4047,
+          "start": "2026-11-11T21:36:34",
+          "end": "2026-11-11T22:44:01",
+          "requested_gpus": 8
+        }
+      ]
+    }
+  }
+}

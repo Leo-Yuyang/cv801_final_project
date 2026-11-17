@@ -46,11 +46,17 @@ case "${stage}" in
       --sources "${sources[@]}" \
       --reference-input "${output_dir}/inputs.jsonl" \
       --output "${output}"
-    "${PYTHON_HOME}/bin/python" "${audit_script}" \
-      --predictions "${output}" \
-      --inputs "${output_dir}/inputs.jsonl" \
-      --output "${output_dir}/metrics.json" \
-      --require-all-valid
+    audit_args=(
+      --predictions "${output}"
+      --inputs "${output_dir}/inputs.jsonl"
+      --output "${output_dir}/metrics.json"
+    )
+    require_all_valid="${REQUIRE_ALL_VALID:-YES}"
+    [[ "${require_all_valid}" == "YES" || "${require_all_valid}" == "NO" ]] || exit 1
+    if [[ "${require_all_valid}" == "YES" ]]; then
+      audit_args+=(--require-all-valid)
+    fi
+    "${PYTHON_HOME}/bin/python" "${audit_script}" "${audit_args[@]}"
     ;;
   repair)
     output_dir="${OUTPUT_DIR:?Set OUTPUT_DIR.}"

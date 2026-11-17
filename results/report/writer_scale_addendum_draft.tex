@@ -1,0 +1,176 @@
+% Additive CV801 Writer-scale report section.
+% Writer-only evidence was frozen from writer_results.current.csv. The
+% reviewer-grid tables were added after the complete nine-cell paired audit and
+% 10,000-resample bootstrap analysis passed on 2026-11-17 UAE time.
+
+\section{Small-Writer Scaling and Reviewer-Capacity Expansion}
+
+\subsection{Controlled Writer-size comparison}
+
+We extended the Writer experiment with Qwen3.5-2B and Qwen3.5-4B while
+retaining Qwen3.5-9B as the adapted anchor. For each controlled size, T0 is the
+unadapted whole-image model, T1 uses the same three-epoch domain LoRA protocol,
+and T2 adds the same frozen YOLO26x localization hints. Data, prompts, target
+responses, decoding temperature, the 4,096-token Golden Test generation cap,
+and evaluation code were held fixed. The existing 27B zero-shot result remains
+a scale reference rather than a fourth point on the adapted scaling curve.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.0pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llrrrrrrrr}
+\toprule
+Writer & Variant & JSON & Schema & Count & ID-F1 & Cap.-F1 & Visual & Unsup. \\
+\midrule
+2B & T0 & 82.4 & 0.0 & 45.4 & 35.5 & 20.7 & 3.429 & 44.6 \\
+2B & T1 & 0.0 & 0.0 & 0.0 & -- & -- & 3.588 & 32.9 \\
+2B & T2 & 0.1 & 0.1 & 0.1 & 0.0 & 31.3 & 3.505 & 41.0 \\
+4B & T0 & 69.4 & 0.0 & 4.3 & 27.1 & 16.7 & 3.078 & 44.6 \\
+4B & T1 & 0.0 & 0.0 & 0.0 & -- & -- & 3.248 & 56.3 \\
+4B & T2 & 5.2 & 5.2 & 4.5 & 5.8 & 45.5 & 4.631 & 33.7 \\
+9B & T0 & 97.6 & 0.0 & 57.2 & 48.9 & 5.8 & 2.650 & 61.9 \\
+9B & T1 & 88.8 & 88.8 & 52.9 & 59.7 & 49.1 & 4.172 & 30.2 \\
+9B & T2 & 99.5 & 99.5 & 64.1 & 76.7 & 51.3 & 4.175 & 33.2 \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Controlled Writer-size results on the 1,000-image Golden Test. JSON,
+Schema, Count, ID-F1, Cap.-F1, and Unsup. are percentages. Visual is the
+independent model-based score in $[0,6]$. Unsup. is the unsupported-claim share,
+not a human hallucination rate. A dash indicates that the frozen structured
+evaluator could not define the metric from schema-invalid outputs.}
+\label{tab:small-writer-results}
+\end{table}
+
+The adapted small Writers did not preserve the structured-output reliability
+of the 9B Writer under the frozen protocol. Both 2B-T1 and 4B-T1 produced no
+schema-valid reports. Proposal conditioning recovered only 0.1\% schema
+validity for 2B-T2 and 5.2\% for 4B-T2, compared with 99.5\% for 9B-T2.
+Object-ID link F1 showed the same capacity boundary: 0.0\% for 2B-T2 and 5.8\%
+for 4B-T2 versus 76.7\% for 9B-T2. The controlled comparison therefore does
+not support replacing the 9B Writer with either smaller adapted model when
+machine-readable output is required.
+
+The independent visual score alone gives a different and potentially
+misleading ranking. In particular, 4B-T2 reached 4.631, above the 9B-T2 score
+of 4.175, even though only 5.2\% of its reports satisfied the output schema.
+This divergence shows that the visual rubric can reward locally plausible
+content while missing an end-to-end interface failure. We therefore treat
+schema validity as a non-negotiable deployment constraint and interpret the
+visual score only jointly with structured metrics. The result also explains
+why invalid samples remain in the evaluation denominator rather than being
+dropped.
+
+These findings are specific to the fixed optimization and decoding protocol.
+Each adapted size uses one training seed, so the experiment identifies a
+failure boundary for the tested checkpoints rather than proving that 2B or 4B
+models cannot be stabilized under any size-specific tuning regime.
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrr}
+\toprule
+Writer & Variant & GPUs & GPU-h & s/image \\
+\midrule
+2B & T0 & 4 & 9.896 & 8.906 \\
+2B & T1 & 4 & 25.836 & 23.252 \\
+2B & T2 & 4 & 5.170 & 4.653 \\
+4B & T0 & 4 & 29.606 & 26.645 \\
+4B & T1 & 4 & 20.423 & 18.381 \\
+4B & T2 & 8 & 84.989 & 38.245 \\
+9B & T0 & 8 & 8.518 & 3.833 \\
+9B & T1 & 8 & 40.400 & 18.180 \\
+9B & T2 & 8 & 8.993 & 4.047 \\
+\bottomrule
+\end{tabular}
+\caption{Measured Writer inference allocation for the controlled scale
+extension. GPU-hours are elapsed allocation time multiplied by requested GPU
+count; seconds per image use the 1,000-image Golden Test. These rows exclude
+shared frozen-detector proposal generation and downstream review/evaluation.
+The 9B jobs completed their predictions but exited during the superseded
+post-inference audit; their complete outputs passed the corrected audit.}
+\label{tab:small-writer-efficiency}
+\end{table}
+
+\subsection{Writer by reviewer-capacity interaction}
+
+The second expansion crossed the T2 Writers with three reviewer tiers:
+R-low (Gemma~3 4B \Rc{} and InternVL3.5-8B \Rd{}), R-mid (Gemma~3 12B
+\Rc{} and InternVL3.5-14B \Rd{}), and R-high (Gemma~3 27B \Rc{} and
+InternVL3.5-38B \Rd{}). The text-only Judge remained Qwen3.5-9B, and revision
+used the same Writer size and T2 adapter as the initial draft. Thus, stronger
+reviewers could not be credited with a hidden switch to the 9B revision model.
+All configurations used the same 1,000 Golden Test images and the same
+independent Pixtral-12B evaluator.
+
+The primary analysis tests whether R-high closes the quality gap between a
+small Writer and the 9B Writer relative to R-low. It reports the independent
+visual total, object-ID link F1, schema validity, and unsupported-claim share.
+For each endpoint, the two prespecified gap-closure contrasts are
+
+\begin{align}
+\Delta_{2B} &= Y_{2B,\mathrm{high}}-Y_{9B,\mathrm{high}} \notag\\
+             &\quad -(Y_{2B,\mathrm{low}}-Y_{9B,\mathrm{low}}),\\
+\Delta_{4B} &= Y_{4B,\mathrm{high}}-Y_{9B,\mathrm{high}} \notag\\
+             &\quad -(Y_{4B,\mathrm{low}}-Y_{9B,\mathrm{low}}).
+\end{align}
+
+Uncertainty is estimated with 10,000 paired image-cluster bootstrap resamples
+using seed 20261104. Object-level sufficient statistics are recomputed within
+each resample so that multiple objects from the same image are not treated as
+independent observations. A cell is eligible only after it contains exactly
+1,000 unique and identically ordered Golden Test IDs. Invalid model outputs
+remain in the denominator and receive the frozen endpoint-specific handling.
+
+\IfFileExists{writer_reviewer_grid_tables.tex}{%
+  \input{writer_reviewer_grid_tables.tex}%
+}{%
+  \begin{quote}
+  \textit{The four-endpoint Writer $\times$ reviewer table and the prespecified
+  paired-bootstrap interaction table are inserted automatically only after all
+  nine cells pass the identical 1,000-image audit. No partial-cell values are
+  treated as reportable results.}
+  \end{quote}
+}
+
+Reviewer capacity did not produce a clear interaction in the independent
+visual total. The 2B and 4B gap-closure estimates were $+0.008$ (95\% CI
+$[-0.100,0.113]$) and $+0.055$ ($[-0.086,0.193]$), respectively. The absolute
+9B scores remained higher in every tier (4.212--4.265) than the 2B
+(3.548--3.597) or 4B (3.176--3.223) scores.
+
+The structured endpoints expose a narrower 2B benefit but no small-Writer
+replacement. From R-low to R-high, 2B schema validity increased from 6.6\% to
+14.2\%, whereas the 9B value changed from 92.8\% to 91.0\%; the direct
+gap-closure estimate was $+9.4$ percentage points ($[+6.3,+12.6]$). The 2B
+object-link interaction was $+2.2$ points ($[+0.6,+3.7]$), but its absolute
+R-high F1 was still only 1.4\% versus 71.5\% for 9B. All three 4B revised
+outputs had 0\% schema validity and no predicted objects under the frozen
+parser, so their object-link F1 and the corresponding interaction are
+undefined rather than zero. Unsupported-claim interactions were small and
+their intervals crossed zero for both 2B ($-0.8$ points,
+$[-3.3,+1.5]$) and 4B ($-1.3$ points, $[-3.5,+0.9]$). Thus the controlled
+grid supports a modest reviewer-associated recovery for the 2B structured
+interface, but stronger reviewers did not overcome the large absolute Writer
+capacity gap under this protocol.
+
+\subsection{Measured efficiency and interpretation boundary}
+
+The final cost analysis uses allocated GPU-hours, execution span excluding
+queue wait, seconds per image, and peak allocated memory when available. Shared
+stages follow the charging rule used in the original report. Parameter count
+is configuration metadata rather than a proxy for measured cost. The final
+Pareto analysis will retain only observed quality--compute trade-offs and will
+not label a small Writer efficient merely because its initial draft is cheaper.
+
+The expansion has two interpretation boundaries. First, the reviewer tiers
+change \Rc{} and \Rd{} jointly; the separate one-factor reviewer sweeps are
+needed before attributing a tier effect to either role. Second, an improvement
+in the model-based visual total cannot compensate for near-zero schema validity.
+The complete conclusion must therefore combine interface validity, object
+linkage, independent visual support, unsupported-claim share, and measured
+compute rather than selecting the most favorable aggregate score.

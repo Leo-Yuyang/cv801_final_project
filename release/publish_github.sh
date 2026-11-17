@@ -34,23 +34,25 @@ fi
 (cd "${github_dir}" && sha256sum -c MANIFEST.sha256)
 
 remote_heads="$(git ls-remote --heads "${repo_url}")"
-[[ -z "${remote_heads}" ]] || {
-  echo "Refusing to push: target GitHub repository already has branches." >&2
-  exit 1
-}
-
-if [[ ! -d "${github_dir}/.git" ]]; then
+if [[ -z "${remote_heads}" ]]; then
   git -C "${github_dir}" init -b main
   git -C "${github_dir}" add .
   git -C "${github_dir}" commit -m "Release CV801 experiment code and reproducibility materials"
   git -C "${github_dir}" remote add origin "${repo_url}"
-else
-  existing_remote="$(git -C "${github_dir}" remote get-url origin 2>/dev/null || true)"
-  [[ "${existing_remote}" == "${repo_url}" ]] || {
-    echo "Existing staging repository points to a different remote: ${existing_remote}" >&2
-    exit 1
-  }
+  git -C "${github_dir}" push -u origin main
+  echo "github_publish_status=COMPLETE mode=initial"
+  exit 0
 fi
 
-git -C "${github_dir}" push -u origin main
-echo "github_publish_status=COMPLETE"
+update_dir="$(mktemp -d "${package_dir}/github-update.XXXXXX")"
+git clone --depth 1 "${repo_url}" "${update_dir}"
+rsync -a --delete --exclude=.git "${github_dir}/" "${update_dir}/"
+(cd "${update_dir}" && sha256sum -c MANIFEST.sha256)
+git -C "${update_dir}" add -A
+if git -C "${update_dir}" diff --cached --quiet; then
+  echo "github_publish_status=NO_CHANGES mode=incremental"
+  exit 0
+fi
+git -C "${update_dir}" commit -m "Add frozen Writer-scale artifacts and recovery tooling"
+git -C "${update_dir}" push origin HEAD:main
+echo "github_publish_status=COMPLETE mode=incremental commit=$(git -C "${update_dir}" rev-parse HEAD)"

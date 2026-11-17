@@ -1,0 +1,59 @@
+% Auto-generated from paired_analysis.json; do not edit by hand.
+% Frozen protocol: 1,000 paired images, 10,000 bootstrap resamples, seed 20261104.
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llrrr}
+\toprule
+Endpoint & T2 Writer & R-low & R-mid & R-high \\
+\midrule
+Independent visual total & 2B & 3.568 & 3.597 & 3.548 \\
+ & 4B & 3.196 & 3.176 & 3.223 \\
+ & 9B & 4.240 & 4.265 & 4.212 \\
+\addlinespace
+Object-ID link F1 & 2B & 0.2\% & 0.6\% & 1.4\% \\
+ & 4B & -- & -- & -- \\
+ & 9B & 72.5\% & 73.5\% & 71.5\% \\
+\addlinespace
+Schema-valid rate & 2B & 6.6\% & 10.2\% & 14.2\% \\
+ & 4B & 0.0\% & 0.0\% & 0.0\% \\
+ & 9B & 92.8\% & 94.3\% & 91.0\% \\
+\addlinespace
+Unsupported-claim share & 2B & 46.3\% & 45.5\% & 45.1\% \\
+ & 4B & 48.8\% & 47.8\% & 47.1\% \\
+ & 9B & 34.9\% & 34.0\% & 34.6\% \\
+\bottomrule
+\end{tabular}
+}%
+\caption{Primary endpoints for the controlled Writer $\times$ reviewer grid. All nine cells contain the same 1,000 Golden Test images. Rates and F1 are percentages; independent visual total is reported on its 0--6 scale.}
+\label{tab:writer-reviewer-grid}
+\end{table}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llrr}
+\toprule
+Endpoint & Gap closure & Estimate & Paired-bootstrap 95\% CI \\
+\midrule
+Independent visual total & 2B vs. 9B & +0.008 & [-0.100, +0.113] \\
+ & 4B vs. 9B & +0.055 & [-0.086, +0.193] \\
+\addlinespace
+Object-ID link F1 & 2B vs. 9B & +2.2 pp & [+0.6 pp, +3.7 pp] \\
+ & 4B vs. 9B & -- & -- \\
+\addlinespace
+Schema-valid rate & 2B vs. 9B & +9.4 pp & [+6.3 pp, +12.6 pp] \\
+ & 4B vs. 9B & +1.8 pp & [-0.1 pp, +3.7 pp] \\
+\addlinespace
+Unsupported-claim share & 2B vs. 9B & -0.8 pp & [-3.3 pp, +1.5 pp] \\
+ & 4B vs. 9B & -1.3 pp & [-3.5 pp, +0.9 pp] \\
+\bottomrule
+\end{tabular}
+}%
+\caption{Prespecified high-minus-low reviewer gap-closure contrasts. Positive values use the raw endpoint direction. For unsupported-claim share, which is lower-is-better, a negative estimate is favorable. Intervals use 10,000 paired image-cluster bootstrap resamples. A dash means that the frozen metric is undefined because a required denominator is zero.}
+\label{tab:writer-reviewer-interaction}
+\end{table}

@@ -24,6 +24,14 @@ pdflatex -interaction=nonstopmode -halt-on-error main.tex
 block, dataset release status, and any future target venue remain for the
 project authors to finalize.
 
+The Writer-scale expansion is additive. `main.tex` includes
+`writer_scale_addendum.tex` only when the audited
+`writer_reviewer_grid_tables.tex` is present. Both files are generated or
+copied into this directory only after all nine Writer-by-reviewer cells pass
+the identical 1,000-image audit and the frozen 10,000-resample paired
+bootstrap. This guard prevents a provisional grid from entering the PDF while
+preserving every earlier table.
+
 ## Evidence sources
 
 - Complete frozen results: `../final_summary.complete.json`

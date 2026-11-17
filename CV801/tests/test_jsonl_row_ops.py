@@ -5,6 +5,7 @@ from pathlib import Path
 
 from scripts.jsonl_row_ops import (
     append_user_instruction,
+    concatenate_rows,
     merge_rows,
     read_jsonl,
     replace_responses,
@@ -35,6 +36,10 @@ class JsonlRowOpsTest(unittest.TestCase):
             self.assertEqual(merge_rows([first, second], source, merged), 4)
             self.assertEqual(read_jsonl(merged), rows)
 
+            concatenated = root / "concatenated.jsonl"
+            self.assertEqual(concatenate_rows([first, second], concatenated), 4)
+            self.assertEqual(read_jsonl(concatenated), rows)
+
             replacement = root / "replacement.jsonl"
             replacement.write_text(
                 json.dumps({"images": ["2.jpg"], "value": 20}) + "\n",
@@ -55,6 +60,33 @@ class JsonlRowOpsTest(unittest.TestCase):
             )
             self.assertEqual(append_user_instruction(source, output, "Be concise."), 1)
             self.assertTrue(read_jsonl(output)[0]["messages"][0]["content"].endswith("Be concise."))
+
+    def test_merge_text_only_predictions_checks_prompt_alignment(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            references = root / "references.jsonl"
+            predictions = root / "predictions.jsonl"
+            output = root / "output.jsonl"
+            references.write_text(json.dumps({
+                "images": ["1.jpg"],
+                "messages": [{"role": "user", "content": "Review sample one."}],
+            }) + "\n", encoding="utf-8")
+            prediction = {
+                "messages": [{"role": "user", "content": "Review sample one."}],
+                "response": "{}",
+            }
+            predictions.write_text(json.dumps(prediction) + "\n", encoding="utf-8")
+
+            self.assertEqual(merge_rows([predictions], references, output), 1)
+            self.assertEqual(read_jsonl(output), [prediction])
+
+            mismatched = root / "mismatched.jsonl"
+            mismatched.write_text(json.dumps({
+                "messages": [{"role": "user", "content": "Wrong sample."}],
+                "response": "{}",
+            }) + "\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "Prompt mismatch"):
+                merge_rows([mismatched], references, root / "mismatch-output.jsonl")
 
     def test_replace_text_response_checks_prompt_ancestry(self):
         with tempfile.TemporaryDirectory() as temporary:

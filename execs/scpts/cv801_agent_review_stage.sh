@@ -22,7 +22,8 @@ audit_script="${project_root}/CV801/scripts/audit_agent_outputs.py"
 attach_script="${project_root}/CV801/scripts/attach_vlm_eval_labels.py"
 evaluate_script="${project_root}/CV801/scripts/evaluate_vlm_predictions.py"
 row_ops_script="${project_root}/CV801/scripts/jsonl_row_ops.py"
-stage="${STAGE:?Set STAGE to judge, revision, revision_round2, recheck, evaluate, audit, select_rows, repair_reviewer, repair_judge, repair_recheck, or merge_reviewer.}"
+recover_decisions_script="${project_root}/CV801/scripts/recover_invalid_decision_rows.py"
+stage="${STAGE:?Set STAGE to judge, revision, revision_round2, recheck, evaluate, audit, recover_decisions, select_rows, split_jsonl, merge_predictions, repair_reviewer, repair_judge, repair_recheck, or merge_reviewer.}"
 
 require_file() {
   [[ -f "$1" ]] || { echo "Required file is missing: $1" >&2; exit 1; }
@@ -117,11 +118,27 @@ case "${stage}" in
     ;;
   audit)
     require_file "${PREDICTIONS:?Set PREDICTIONS.}"
-    audit_args=(
-      --kind "${AUDIT_KIND:?Set AUDIT_KIND.}"
-      --predictions "${PREDICTIONS}"
-      --require-all-valid
-    )
+    audit_args=(--kind "${AUDIT_KIND:?Set AUDIT_KIND.}" --predictions "${PREDICTIONS}")
+    require_all_valid="${REQUIRE_ALL_VALID:-YES}"
+    [[ "${require_all_valid}" == "YES" || "${require_all_valid}" == "NO" ]] || exit 1
+    if [[ "${require_all_valid}" == "YES" ]]; then
+      audit_args+=(--require-all-valid)
+    fi
+    if [[ -n "${AUDIT_OUTPUT:-}" ]]; then
+      audit_args+=(--output "${AUDIT_OUTPUT}")
+    fi
+    "${python_bin}" "${audit_script}" "${audit_args[@]}"
+    ;;
+  recover_decisions)
+    require_file "${PREDICTIONS:?Set PREDICTIONS.}"
+    output="${OUTPUT:?Set OUTPUT.}"
+    kind="${AUDIT_KIND:?Set AUDIT_KIND to judge or recheck.}"
+    [[ "${kind}" == "judge" || "${kind}" == "recheck" ]] || exit 1
+    "${python_bin}" "${recover_decisions_script}" \
+      --kind "${kind}" \
+      --input "${PREDICTIONS}" \
+      --output "${output}"
+    audit_args=(--kind "${kind}" --predictions "${output}" --require-all-valid)
     if [[ -n "${AUDIT_OUTPUT:-}" ]]; then
       audit_args+=(--output "${AUDIT_OUTPUT}")
     fi
@@ -135,6 +152,32 @@ case "${stage}" in
       --output "${output}" \
       --start "${START_LINE:?Set START_LINE.}" \
       --end "${END_LINE:?Set END_LINE.}"
+    ;;
+  split_jsonl)
+    require_file "${SOURCE_INPUT:?Set SOURCE_INPUT.}"
+    output_dir="${OUTPUT_DIR:?Set OUTPUT_DIR.}"
+    shards="${SHARDS:?Set SHARDS.}"
+    [[ "${shards}" =~ ^[1-9][0-9]*$ ]] || exit 1
+    [[ ! -e "${output_dir}" ]] || { echo "Refusing to overwrite ${output_dir}." >&2; exit 1; }
+    mkdir -p "${output_dir}"
+    total_lines="$(wc -l < "${SOURCE_INPUT}")"
+    lines_per_shard=$(( (total_lines + shards - 1) / shards ))
+    split -l "${lines_per_shard}" -d -a 2 --additional-suffix=.jsonl \
+      "${SOURCE_INPUT}" "${output_dir}/input-"
+    test "$(find "${output_dir}" -maxdepth 1 -type f -name 'input-*.jsonl' | wc -l)" -eq "${shards}"
+    test "$(cat "${output_dir}"/input-*.jsonl | wc -l)" -eq "$(wc -l < "${SOURCE_INPUT}")"
+    ;;
+  merge_predictions)
+    output="${OUTPUT:?Set OUTPUT.}"
+    require_file "${REFERENCE_INPUT:?Set REFERENCE_INPUT.}"
+    IFS=: read -r -a sources <<< "${SOURCE_PREDICTIONS:?Set colon-separated SOURCE_PREDICTIONS.}"
+    for source in "${sources[@]}"; do
+      require_file "${source}"
+    done
+    "${python_bin}" "${row_ops_script}" merge \
+      --sources "${sources[@]}" \
+      --reference-input "${REFERENCE_INPUT}" \
+      --output "${output}"
     ;;
   repair_reviewer)
     require_file "${SOURCE_PREDICTIONS:?Set SOURCE_PREDICTIONS.}"

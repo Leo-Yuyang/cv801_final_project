@@ -479,9 +479,11 @@ access:
     choose \texttt{accept} or \texttt{revise} but cannot add visual facts.
 \end{itemize}
 
-The planned Gemma 3 visual reviewer was unavailable behind an external model
-access gate, so InternVL3.5-8B is the primary \Rc{} and the accessible
-Pixtral-12B reviewer provides the cross-family swap. \Rd{} uses its frozen model
+For the original matrix, the planned Gemma 3 visual reviewer was unavailable
+behind an external model-access gate. InternVL3.5-8B was therefore the primary
+\Rc{}, and Pixtral-12B provided the cross-family swap. Access became available
+for the later additive reviewer-capacity experiment, which evaluates Gemma 3
+reviewers without replacing the original results. \Rd{} uses its frozen model
 knowledge but no external domain-reference corpus; all validation and test
 reference texts remain hidden.
 
@@ -642,6 +644,13 @@ calibrated stopping rule.
 
 \FloatBarrier
 
+% Include the additive Writer-scale section only when the complete paired-grid
+% tables exist. Earlier report sections and results remain unchanged.
+\IfFileExists{writer_reviewer_grid_tables.tex}{%
+  \input{writer_scale_addendum.tex}%
+  \FloatBarrier
+}{}
+
 \section{Efficiency and Runtime}
 
 GPU-hours sum allocated GPU time for each logical system. Execution span is the
@@ -742,6 +751,28 @@ model-based visual gain at substantially higher cost, and that gain saturates
 after one round. These results support a practical two-tier design: use T2 as
 the default structured writer and route only uncertain or high-risk cases to a
 single review round.
+
+\section*{Data Availability}
+
+The processed 8,097-image dataset, detection and VLM splits, reference-free
+Golden Test inputs, isolated Golden references, per-sample predictions,
+aggregate metrics, audit evidence, and report materials are publicly available
+in the versioned Hugging Face dataset repository
+\url{https://huggingface.co/datasets/leo20000306/cv801_data}. Each released
+snapshot includes a file manifest and SHA-256 checksums. The repository does
+not currently have a DOI; a specific Hub commit hash should therefore be cited
+when reproducing these results. Public access does not waive source-data or
+third-party licence terms.
+
+\section*{Code Availability}
+
+Training, inference, evaluation, audit, paired-bootstrap, and release-building
+code is publicly available at
+\url{https://github.com/Leo-Yuyang/cv801_final_project}. Project-trained
+checkpoints and checkpoint-level metadata are available at
+\url{https://huggingface.co/leo20000306/cv801_models}. Public upstream
+checkpoints are not mirrored and must be obtained from their original
+publishers under the applicable licence and access terms.
 
 \bibliography{references}
 
