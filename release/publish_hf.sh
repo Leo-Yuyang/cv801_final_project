@@ -41,12 +41,10 @@ fi
 
 repo_keys=(
   models
-  data
 )
-repo_types=(model dataset)
+repo_types=(model)
 repo_names=(
   "${HF_MODELS_REPO:-cv801_models}"
-  "${HF_DATA_REPO:-cv801_data}"
 )
 
 echo "hf_publish_mode=$([[ "${execute}" == "1" ]] && echo execute || echo dry-run)"

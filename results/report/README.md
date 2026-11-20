@@ -21,8 +21,9 @@ pdflatex -interaction=nonstopmode -halt-on-error main.tex
 ```
 
 `main.pdf` is the rendered report included in this repository. The author
-block, dataset release status, and any future target venue remain for the
-project authors to finalize.
+block and any future target venue remain for the project authors to finalize.
+The report records that the agricultural dataset is closed and not publicly
+distributed.
 
 The Writer-scale expansion is additive. `main.tex` includes
 `writer_scale_addendum.tex` only when the audited

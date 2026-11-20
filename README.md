@@ -2,7 +2,7 @@
 
 CV801 is a reproducible experimental project for fruit and leaf imagery. It covers three object detectors, structured agricultural description with Qwen3.5, and an Agent Review pipeline composed of visual and domain reviewers, a text-only Judge, Writer revision, Judge recheck, and an independent visual evaluator.
 
-This repository contains the executable training, inference, evaluation, and audit code. Processed data, project-trained weights, per-sample outputs, and aggregate results are distributed through two public Hugging Face repositories. Public upstream checkpoints are not mirrored.
+This repository contains the executable training, inference, evaluation, and audit code together with aggregate experimental results. The agricultural dataset, its annotations, processed VLM/Golden splits, and per-sample artifacts are closed and are not distributed through GitHub or Hugging Face. Project-trained weights are distributed through one public Hugging Face model repository. Public upstream checkpoints are not mirrored.
 
 - GitHub: <https://github.com/Leo-Yuyang/cv801_final_project>
 - Experimental report: [`results/report/main.pdf`](results/report/main.pdf)
@@ -10,16 +10,15 @@ This repository contains the executable training, inference, evaluation, and aud
 - Complete result tables: [`results/final_summary.complete.md`](results/final_summary.complete.md)
 - Additive Writer-scale results: [`results/writer-scale/README.md`](results/writer-scale/README.md)
 
-> The Hugging Face repositories are publicly readable and do not require authentication for download. Publication does not replace the artifact-specific license terms described below.
+> The released model repository is publicly readable and does not require authentication for download. The code and model release does not grant access to the closed dataset.
 
-## 1. Release repositories
+## 1. Released model repository
 
-Only two Hugging Face repositories are used:
+Only the following project repository is released on Hugging Face:
 
 | Repository | Type | Contents |
 |---|---|---|
 | [`leo20000306/cv801_models`](https://huggingface.co/leo20000306/cv801_models) | Model | Nine released project-trained checkpoints, configurations, and checkpoint-level metrics |
-| [`leo20000306/cv801_data`](https://huggingface.co/datasets/leo20000306/cv801_data) | Dataset | Processed datasets, Golden inputs/references, per-sample predictions, audit evidence, aggregate metrics, and the report |
 
 `cv801_models` is organized by model family:
 
@@ -35,19 +34,10 @@ qwen35-4b-t1-lora/
 qwen35-4b-t2-lora/
 ```
 
-`cv801_data` separates inputs from outputs:
-
-```text
-dataset/                 # processed detection, T1, T2, and Golden Test data
-results/                 # predictions, metrics, audits, efficiency data, and report
-```
-
-Completed additive Writer-by-reviewer releases place the paired 3 x 3 analysis
-under `results/writer-reviewer-grid/`. Treat the grid as complete only when the
-directory contains the nine cells' structured and independent-evaluator
-outputs, paired-analysis JSON, report tables, per-image sufficient statistics,
-and repair-lineage files together. This atomic boundary prevents partial cells
-from being presented as final results.
+Aggregate results and the completed paired Writer-by-reviewer analysis are
+included under `results/` in this GitHub repository. Per-sample predictions,
+inputs, references, and sufficient statistics are not part of the public
+release because they are derived from the closed dataset.
 
 ## 2. Quick start
 
@@ -67,53 +57,30 @@ cp .env.example .env
 # Edit .env and set PYTHON_HOME to the absolute path of .venv.
 
 PYTHONPATH=CV801 python -m pytest -q CV801/tests
-# Optional for public CV801 downloads; useful for higher Hub rate limits or gated upstream models:
+# Optional for project-model downloads; useful for higher Hub rate limits or gated upstream models:
 # hf auth login
 # hf auth whoami
 ```
 
 The CPU environment requires Python 3.10+ and supports data audits, COCO/VLM metrics, and tests. Formal training and large-model inference use Slurm, Apptainer, ROCm 7.0, and AMD PyTorch 2.8.
 
-## 3. Download and prepare the data
+## 3. Prepare authorized local data
 
-Download the consolidated data repository:
+The dataset is closed and has no public download URL. Raw/processed images,
+annotations, VLM supervision, Golden Test inputs, and Golden references are not
+released. Authorized project members must provision the frozen internal data
+locally at the paths expected by the scripts:
 
-```bash
-mkdir -p datas/cv801_data
-hf download leo20000306/cv801_data \
-  --repo-type dataset \
-  --local-dir datas/cv801_data
-
-(cd datas/cv801_data && sha256sum -c MANIFEST.sha256)
+```text
+datas/cv801_detection_v1/
+datas/cv801_vlm_v1/
+datas/cv801_vlm_t2_yolo26x_v1/
+datas/cv801_golden_test_inputs_v1/
 ```
 
-Map the released directories to the paths expected by the scripts:
-
-```bash
-[[ -e datas/cv801_detection_v1 || -L datas/cv801_detection_v1 ]] || \
-  ln -s cv801_data/dataset/detection datas/cv801_detection_v1
-[[ -e datas/cv801_vlm_v1 || -L datas/cv801_vlm_v1 ]] || \
-  ln -s cv801_data/dataset/vlm-t1 datas/cv801_vlm_v1
-[[ -e datas/cv801_vlm_t2_yolo26x_v1 || -L datas/cv801_vlm_t2_yolo26x_v1 ]] || \
-  ln -s cv801_data/dataset/vlm-t2-yolo26x datas/cv801_vlm_t2_yolo26x_v1
-[[ -e datas/cv801_golden_test_inputs_v1 || -L datas/cv801_golden_test_inputs_v1 ]] || \
-  ln -s cv801_data/dataset/golden-inputs datas/cv801_golden_test_inputs_v1
-```
-
-Do not create a training-time link to `dataset/golden-references/`. Golden references must remain isolated until every model, prompt, threshold, checkpoint, and review configuration has been frozen.
-
-To download only experiment results:
-
-```bash
-hf download leo20000306/cv801_data \
-  --repo-type dataset \
-  --include "results/*" \
-  --local-dir artifacts/cv801_data
-```
-
-The Hugging Face repositories do not currently provide DOIs. For an exact
-reproduction, record the Hub commit hash and verify `MANIFEST.sha256` rather
-than citing only the mutable `main` branch.
+Keep Golden references outside all training-time paths until every model,
+prompt, threshold, checkpoint, and review configuration has been frozen. The
+public code, reports, and model checkpoints do not confer dataset access.
 
 ### Dataset definition
 
@@ -127,7 +94,10 @@ The frozen dataset contains 8,097 images, 14,601 annotated objects, and 11 crop 
 
 Near-duplicate groups do not cross splits. Images were normalized to orientation-corrected RGB JPEG so that pixels and box coordinates remain aligned. VLM supervision uses dataset-level visually reviewed GPT captions; it is not an independent agricultural-expert reference.
 
-Using the frozen processed release is recommended. The GitHub repository does not redistribute the original OneDrive/SharePoint source files. Authorized users who need to rebuild the processed dataset should use the `prepare_*`, `validate_*`, and `audit_*` tools under `CV801/scripts/` and follow:
+The GitHub and Hugging Face repositories do not redistribute the original
+OneDrive/SharePoint source files or any processed dataset. Authorized project
+members rebuilding their internal copy should use the `prepare_*`,
+`validate_*`, and `audit_*` tools under `CV801/scripts/` and follow:
 
 - [`docs/protocols/detection/README.md`](docs/protocols/detection/README.md)
 - [`docs/protocols/vlm/README.md`](docs/protocols/vlm/README.md)
@@ -428,7 +398,7 @@ and under [`results/writer-reviewer-grid/`](results/writer-reviewer-grid/).
 All nine cells contain the same 1,000 Golden Test images; the analysis uses
 10,000 paired image-cluster bootstrap resamples with seed `20261104`.
 
-Human rating and the Direct GPT-6 Astra baseline were explicitly cancelled and are not missing experiments. The bundled PDF freezes the completed InternVL/Pixtral matrix. The Gemma branch is additive and does not remove or overwrite existing results. See the report and `cv801_data/results/` for complete values and evidence boundaries.
+Human rating and the Direct GPT-6 Astra baseline were explicitly cancelled and are not missing experiments. The bundled PDF freezes the completed InternVL/Pixtral matrix. The Gemma branch is additive and does not remove or overwrite existing results. See the report and the aggregate files under `results/` for released values and evidence boundaries.
 
 ## 10. Repository layout and integrity checks
 
@@ -454,20 +424,20 @@ The legacy `agroannotate` UI in the original delivery had empty `prompts/` and `
 
 ## 11. License and access limitations
 
-This repository currently has no unified project license; project code is all-rights-reserved by default. Upstream models, Ultralytics, LocateAnything/Eagle, data sources, and third-party code retain their own terms. LocateAnything and its derivative checkpoint are restricted to non-commercial research or evaluation. Public availability does not waive or replace those terms.
+This repository currently has no unified project license; project code is all-rights-reserved by default. Upstream models, Ultralytics, LocateAnything/Eagle, data sources, and third-party code retain their own terms. LocateAnything and its derivative checkpoint are restricted to non-commercial research or evaluation. The agricultural dataset is closed and not licensed for public redistribution. Public availability of code, reports, and checkpoints does not waive or replace those terms.
 
 A formal project `LICENSE` and citation file should be added only after the authors finalize code licensing, data permissions, authorship, and citation details. See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for the third-party dependency scope.
 
 ## 12. Data and code availability
 
-The executable code and frozen protocols are available in this GitHub
-repository. Processed data, Golden inputs and references, predictions, metrics,
-and report material are mapped explicitly to
-[`leo20000306/cv801_data`](https://huggingface.co/datasets/leo20000306/cv801_data).
-Released fine-tuned checkpoints and LoRA adapters are mapped to
+The executable code, frozen protocols, aggregate metrics, and report material
+are available in this GitHub repository. The agricultural dataset, processed
+splits, annotations, Golden inputs/references, and per-sample derived artifacts
+are closed and are not released on GitHub or Hugging Face. Released fine-tuned
+checkpoints and LoRA adapters are mapped to
 [`leo20000306/cv801_models`](https://huggingface.co/leo20000306/cv801_models).
 Public upstream base weights are obtained from their original repositories and
-are not mirrored. None of these records currently has a DOI; cite the Git or
+are not mirrored. The released records currently have no DOI; cite the Git or
 Hub commit hash used and verify the associated `MANIFEST.sha256`. Public access
-does not create a blanket licence or supersede source-data and upstream-model
-terms.
+to the released artifacts does not create a blanket licence, grant access to
+the dataset, or supersede source-data and upstream-model terms.
